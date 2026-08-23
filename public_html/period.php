@@ -7,10 +7,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: me");
     exit;
 }
-require_once "config.php";
-$sql3 = "SELECT period FROM period WHERE id='1'";
-$result3 =$conn->query($sql3);
-$row3 = mysqli_fetch_assoc($result3);
-echo $row3['period'];
+$time_minutes = date('H') * 60 + date('i');
+$period_num = floor($time_minutes / 3) + 1;
+$period = date('Ymd') . sprintf("%03d", $period_num);
+echo $period;
 
 ?>

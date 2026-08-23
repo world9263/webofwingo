@@ -1,95 +1,73 @@
 <?php
+require_once __DIR__ . '/../config.php';
 
-$servername = $_ENV['MYSQLHOST'] ?? 'localhost';
-$dbport = $_ENV['MYSQLPORT'] ?? '3306';
-$username = $_ENV['MYSQLUSER'] ?? 'aviatorp_demo1';
-$password = $_ENV['MYSQLPASSWORD'] ?? 'aviatorp_demo1';
-$dbname = $_ENV['MYSQLDATABASE'] ?? 'aviatorp_demo1';
+$amount = isset($_POST["amount"]) ? $_POST["amount"] : 0;    
+$mchId = isset($_POST["mchId"]) ? $_POST["mchId"] : '';
+$mchOrderNo = isset($_POST["mchOrderNo"]) ? $_POST["mchOrderNo"] : '';
+$merRetMsg = isset($_POST["merRetMsg"]) ? $_POST["merRetMsg"] : '';
+$orderDate = isset($_POST["orderDate"]) ? $_POST["orderDate"] : '';
+$orderNo = isset($_POST["orderNo"]) ? $_POST["orderNo"] : '';    
+$oriAmount = isset($_POST["oriAmount"]) ? $_POST["oriAmount"] : 0;
+$tradeResult = isset($_POST["tradeResult"]) ? $_POST["tradeResult"] : '';
+$signType = isset($_POST["signType"]) ? $_POST["signType"] : '';
+$sign = isset($_POST["sign"]) ? $_POST["sign"] : '';
 
-// Establish a database connection
-$conn = mysqli_connect($servername, $username, $password, $dbname, $dbport);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-include ('signapi.php');
-
-$merchant_key = $_ENV['PAYMENT_API_KEY'] ?? "5d6af34cd11f453aa837766355d07b25";
-
-$amount = $_POST["amount"];    
-
-$mchId = $_POST["mchId"];
-
-$mchOrderNo = $_POST["mchOrderNo"];
-
-$merRetMsg = $_POST["merRetMsg"];
-
-$orderDate = $_POST["orderDate"];
-
-$orderNo = $_POST["orderNo"];    
-
-$oriAmount = $_POST["oriAmount"];
-
-$tradeResult = $_POST["tradeResult"];
-
-$signType = $_POST["signType"];
-
-$sign = $_POST["sign"];
-
-$am = $_POST['oriAmount'];
+$am = floatval($oriAmount);
 $amount = $am;
-$orderid = $_POST['mchOrderNo'];
-$order = explode('xx',$_POST['mchOrderNo']);
-$user = $order[1];
+$orderid = $mchOrderNo;
+$order = explode('xx', $mchOrderNo);
+$user = isset($order[1]) ? $order[1] : '';
 $username = $user;
 
+if ($username) {
+    // Fetch user data from Firebase
+    $user_data = firebase_request("users/$username");
 
-function random_strings($length_of_string)
-{
-	$str_result = '0123456789AXYZ012345678901234567890123456789';
-	return substr(str_shuffle($str_result),0,$length_of_string);
+    if ($user_data) {
+        // Save recharge transaction record in Firebase
+        $recharge_record = [
+            'username' => $username,
+            'amount' => $amount,
+            'status' => 'Success',
+            'utr' => $orderid,
+            'time' => date('Y-m-d H:i:s')
+        ];
+        firebase_request("recharges/$orderid", "PUT", $recharge_record);
+        
+        // Add recharge amount to user balance
+        $current_balance = isset($user_data['balance']) ? floatval($user_data['balance']) : 0;
+        $new_balance = $current_balance + $amount;
+        firebase_request("users/$username/balance", "PUT", $new_balance);
+        
+        // Referral bonus check
+        $refcode = isset($user_data['refcode']) ? $user_data['refcode'] : '';
+        if ($refcode) {
+            $bonus = 100; // Flat referral bonus
+            
+            // Log bonus history
+            firebase_request("bonuses/" . time(), "PUT", [
+                'giver' => $username,
+                'receiver_code' => $refcode,
+                'amount' => $bonus,
+                'time' => date('Y-m-d H:i:s')
+            ]);
+            
+            // Award bonus to referrer
+            $all_users = firebase_request("users");
+            if ($all_users) {
+                foreach ($all_users as $uname => $udata) {
+                    if (isset($udata['usercode']) && $udata['usercode'] == $refcode) {
+                        $ref_balance = isset($udata['balance']) ? floatval($udata['balance']) : 0;
+                        $ref_bonus = isset($udata['bonus']) ? floatval($udata['bonus']) : 0;
+                        firebase_request("users/$uname/bonus", "PUT", $ref_bonus + $bonus);
+                        firebase_request("users/$uname/balance", "PUT", $ref_balance + $bonus);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
-
-$rand = random_strings(22);
-
-$sql1 = "INSERT INTO recharge (username, recharge,status,upi,utr,rand) VALUES ('$user', '$am','unpaid','@missmeera','$orderid','$rand')";
-$conn->query($sql1);
-
-$opt = "SELECT COUNT(*) as total FROM `recharge` WHERE username='$user' AND status='Success'";
-$optres = $conn->query($opt);
-$sum = mysqli_fetch_assoc($optres);
-
-if ($sum['total'] == "" or $sum['total'] <= 2) {
-    
-    if ($sum['total'] == 1 && $amount >= 600) {
-		$bonus = 150;
-	} elseif ($sum['total'] == 2 && $amount >= 1000) {
-		$bonus = 200;
-	} else {
-		$bonus = 100;
-	}
-
-	$win = "select refcode FROM `users` WHERE  username ='$username' ";
-	$result3 = $conn->query($win);
-	$row3 = mysqli_fetch_assoc($result3);
-	$refcode = $row3['refcode'];
-	$adb = "UPDATE users SET bonus= bonus + $bonus WHERE usercode='$refcode'";
-	$conn->query($adb);
-	$transquery = "INSERT INTO trans (username,reason,amount) VALUES ('$refcode' ,'CheckIn Bonus',$bonus)";
-	$conn->query($transquery);
-	$addbrec = "INSERT INTO bonus (giver,usercode,amount,level) VALUES ('$username','$refcode','$bonus','1')";
-	$conn->query($addbrec);
-}
-
-$addwin00 = "UPDATE recharge SET status = 'Success' WHERE username='$username' AND recharge='$amount' AND utr='$orderid'";
-$conn->query($addwin00);
-$transquery = "INSERT INTO trans (username,reason,amount) VALUES ('$username', 'Recharge',$amount)";
-$conn->query($transquery);
-
-$addwin0 = "UPDATE users SET balance= balance + $amount WHERE username='$username'";
-$conn->query($addwin0);
 
 echo 'success';
-
 ?>
