@@ -1,4 +1,4 @@
-﻿FROM php:8.1-apache
+FROM php:8.1-apache
 
 # Install MariaDB (MySQL compatible) server and client
 RUN apt-get update && apt-get install -y \
@@ -9,8 +9,11 @@ RUN apt-get update && apt-get install -y \
 # Install MySQL extensions for PHP
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+# Enable Apache mod_rewrite and disable competing MPM modules
+RUN a2dismod mpm_event || true \
+    && a2dismod mpm_worker || true \
+    && a2enmod mpm_prefork || true \
+    && a2enmod rewrite
 
 # Copy public_html files into apache default web directory
 COPY public_html/ /var/www/html/
