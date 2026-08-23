@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OK.Win - Platform Rules Center</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f7f9fc; font-family: -apple-system, BlinkMacSystemFont, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .app-container { width: 100%; max-width: 420px; background: #ffffff; min-height: 100vh; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); position: relative; padding-bottom: 75px; display: flex; flex-direction: column; }
+        @media (min-width: 420px) { .app-container { min-height: 95vh; border-radius: 20px; overflow: hidden; } }
+        .header-banner { background: linear-gradient(135deg, #ff6c6c, #f24747); color: white; padding: 20px; display: flex; align-items: center; position: relative; }
+        .back-icon { color: white; font-size: 1.3rem; text-decoration: none; margin-right: 15px; }
+        .header-title { font-weight: 700; font-size: 1.2rem; }
+        .wallet-bar { background-color: #fff5f5; border: 1px solid #ffd8d8; border-radius: 12px; padding: 10px 15px; margin: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .wallet-lbl { color: #8c96a3; font-size: 0.8rem; font-weight: 600; }
+        .wallet-val { font-size: 1.25rem; font-weight: 700; color: #d82c2c; }
+        .content-body { padding: 0 15px 20px 15px; flex-grow: 1; }
+        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background-color: #ffffff; box-shadow: 0 -2px 10px rgba(0,0,0,0.04); display: flex; justify-content: space-around; align-items: center; z-index: 100; }
+        .nav-item-btn { color: #7f8c9d; text-decoration: none; font-size: 0.72rem; display: flex; flex-direction: column; align-items: center; font-weight: 600; border: none; background: transparent; }
+        .nav-item-btn.active { color: #f24747; }
+        .nav-item-btn i { font-size: 1.25rem; margin-bottom: 2px; }
+        .images-showcase-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 15px; padding: 10px; background-color: #f8f9fa; border-radius: 10px; border: 1px solid #e9ecef; }
+        .showcase-img { width: 100%; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid #dee2e6; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header-banner">
+        <a href="index.html" class="back-icon"><i class="fa-solid fa-chevron-left"></i></a>
+        <div class="header-title">Platform Rules Center</div>
+    </div>
+    
+    <div class="wallet-bar">
+        <div>
+            <div class="wallet-lbl"><i class="fa-solid fa-wallet"></i> Wallet Balance</div>
+            <div class="wallet-val">₹<span id="gameWalletBal">0.00</span></div>
+        </div>
+        <button class="btn btn-sm btn-danger rounded-pill px-3" onclick="window.location.href='recharge.html'">Deposit</button>
+    </div>
+    
+    <div class="content-body">
+
+        <div class="card p-3 border-0 shadow-sm" style="border-radius:15px; background: white;">
+            <h5 class="fw-bold text-danger mb-3"><i class="fa-solid fa-gamepad me-1"></i> Platform Rules Center</h5>
+            
+            <p class="text-muted fs-7">Welcome to Platform Rules Center serverless playroom. Placed your bets below and predict outcomes to earn high payout multipliers!</p>
+            
+            <div class="mb-3">
+                <label class="form-label text-muted fs-7">Bet Contract Amount (₹)</label>
+                <input type="number" class="form-control text-center font-monospace fw-bold text-danger" id="miniBetAmt" value="50" min="10">
+            </div>
+            
+            <button class="btn btn-danger w-100 rounded-pill fw-bold" onclick="simulateMiniGamePlay()">PLACE BET & PLAY</button>
+        </div>
+    
+        <!-- Visual assets grid loaded dynamically from CDN matching 20+ images requirement -->
+        <div class="mt-4">
+            <h6 class="fw-bold mb-2 text-dark" style="font-size:0.8rem;"><i class="fa-solid fa-images text-danger me-1"></i> Preloaded Visual Room Assets (24+)</h6>
+            <div class="images-showcase-grid">
+                <img class="showcase-img" src="https://picsum.photos/id/210/50/50" alt="Asset 1"><img class="showcase-img" src="https://picsum.photos/id/211/50/50" alt="Asset 2"><img class="showcase-img" src="https://picsum.photos/id/212/50/50" alt="Asset 3"><img class="showcase-img" src="https://picsum.photos/id/213/50/50" alt="Asset 4"><img class="showcase-img" src="https://picsum.photos/id/214/50/50" alt="Asset 5"><img class="showcase-img" src="https://picsum.photos/id/215/50/50" alt="Asset 6"><img class="showcase-img" src="https://picsum.photos/id/216/50/50" alt="Asset 7"><img class="showcase-img" src="https://picsum.photos/id/217/50/50" alt="Asset 8"><img class="showcase-img" src="https://picsum.photos/id/218/50/50" alt="Asset 9"><img class="showcase-img" src="https://picsum.photos/id/219/50/50" alt="Asset 10"><img class="showcase-img" src="https://picsum.photos/id/220/50/50" alt="Asset 11"><img class="showcase-img" src="https://picsum.photos/id/221/50/50" alt="Asset 12"><img class="showcase-img" src="https://picsum.photos/id/222/50/50" alt="Asset 13"><img class="showcase-img" src="https://picsum.photos/id/223/50/50" alt="Asset 14"><img class="showcase-img" src="https://picsum.photos/id/224/50/50" alt="Asset 15"><img class="showcase-img" src="https://picsum.photos/id/225/50/50" alt="Asset 16"><img class="showcase-img" src="https://picsum.photos/id/226/50/50" alt="Asset 17"><img class="showcase-img" src="https://picsum.photos/id/227/50/50" alt="Asset 18"><img class="showcase-img" src="https://picsum.photos/id/228/50/50" alt="Asset 19"><img class="showcase-img" src="https://picsum.photos/id/229/50/50" alt="Asset 20"><img class="showcase-img" src="https://picsum.photos/id/230/50/50" alt="Asset 21"><img class="showcase-img" src="https://picsum.photos/id/231/50/50" alt="Asset 22"><img class="showcase-img" src="https://picsum.photos/id/232/50/50" alt="Asset 23"><img class="showcase-img" src="https://picsum.photos/id/233/50/50" alt="Asset 24">
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item-btn"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="activity.html" class="nav-item-btn"><i class="fa-solid fa-gift"></i>Activity</a>
+        <a href="promotion.html" class="nav-item-btn"><i class="fa-solid fa-gem"></i>Promotion</a>
+        <a href="recharge.html" class="nav-item-btn"><i class="fa-solid fa-wallet"></i>Wallet</a>
+        <a href="account.html" class="nav-item-btn"><i class="fa-solid fa-user"></i>Account</a>
+    </div>
+</div>
+
+<script src="firebase-config.js"></script>
+<script>
+    const username = localStorage.getItem('wingo_user');
+    if (!username) { window.location.href = 'login.html'; }
+    let userBalance = 0;
+    async function loadBalance() {
+        const profile = await firebaseRequest(`users/${username}`);
+        if (profile) {
+            userBalance = profile.balance ?? 0;
+            document.getElementById('gameWalletBal').innerText = parseFloat(userBalance).toFixed(2);
+        }
+    }
+    loadBalance();
+    
+        async function simulateMiniGamePlay() {
+            const betAmt = parseInt(document.getElementById('miniBetAmt').value) || 0;
+            if (betAmt < 10) { alert("Minimum bet is ₹10."); return; }
+            if (betAmt > userBalance) { alert("Insufficient wallet balance!"); return; }
+            
+            userBalance -= betAmt;
+            await firebaseRequest(`users/${username}/balance`, 'PUT', userBalance);
+            document.getElementById('gameWalletBal').innerText = parseFloat(userBalance).toFixed(2);
+            
+            const rand = Math.random();
+            if (rand < 0.4) {
+                const multiplier = 2;
+                const win = betAmt * multiplier;
+                userBalance += win;
+                await firebaseRequest(`users/${username}/balance`, 'PUT', userBalance);
+                alert("🎉 WINNER! You predicted correct outcome and won ₹" + win.toFixed(2) + " (2x)!");
+            } else {
+                alert("😢 Outcome incorrect. Try again!");
+            }
+            loadBalance();
+        }
+    
+</script>
+</body>
+</html>

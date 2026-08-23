@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OK.Win - Wallet Hub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f9fc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+            padding-bottom: 75px;
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 420px) {
+            .app-container {
+                min-height: 95vh;
+                border-radius: 20px;
+                overflow: hidden;
+            }
+        }
+        
+        .header-banner {
+            background: linear-gradient(135deg, #ff6c6c, #f24747);
+            color: white;
+            padding: 30px 20px 60px 20px;
+            text-align: center;
+            position: relative;
+        }
+        .back-icon {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: white;
+            font-size: 1.3rem;
+            text-decoration: none;
+        }
+        .header-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        
+        /* Card Panel overlaps banner */
+        .wallet-card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin: -35px 15px 15px 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            z-index: 10;
+            position: relative;
+            text-align: center;
+        }
+        .wallet-circle {
+            width: 60px;
+            height: 60px;
+            background-color: #ffeff0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px auto;
+            color: #f24747;
+            font-size: 1.8rem;
+        }
+        .wallet-bal-lbl {
+            font-size: 0.85rem;
+            color: #7f8c9d;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .wallet-bal-val {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #212529;
+            margin-bottom: 20px;
+        }
+        
+        /* Grid Quick access */
+        .wallet-menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 0 15px;
+            margin-bottom: 25px;
+        }
+        .wallet-menu-btn {
+            background-color: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.01);
+            transition: all 0.2s ease;
+        }
+        .wallet-menu-btn:active {
+            transform: scale(0.97);
+            background-color: #f8f9fa;
+        }
+        .wallet-menu-btn i {
+            font-size: 2rem;
+        }
+        .icon-deposit { color: #2ecc71; }
+        .icon-withdraw { color: #e67e22; }
+        .icon-recharge-rec { color: #3498db; }
+        .icon-withdraw-rec { color: #9b59b6; }
+
+        /* History Listing Card */
+        .history-card {
+            background-color: white;
+            border-radius: 15px;
+            margin: 0 15px 15px 15px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            border: 1px solid #e9ecef;
+        }
+        .history-card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .history-card-title i { color: #f24747; }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f3f6;
+        }
+        .history-item:last-child { border-bottom: none; }
+        .item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .item-title { font-weight: 600; font-size: 0.85rem; color: #2c3e50; }
+        .item-time { font-size: 0.72rem; color: #adb5bd; }
+        .item-amt { font-weight: 700; font-size: 0.9rem; }
+        .amt-success { color: #2ecc71; }
+        .amt-pending { color: #f39c12; }
+        .amt-failed { color: #e74c3c; }
+
+        /* Shared Footer Nav */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #ffffff;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.04);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+        .nav-item-btn {
+            color: #7f8c9d;
+            text-decoration: none;
+            font-size: 0.72rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+        }
+        .nav-item-btn.active { color: #f24747; }
+        .nav-item-btn i { font-size: 1.25rem; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-banner">
+        <a href="index.html" class="back-icon"><i class="fa-solid fa-chevron-left"></i></a>
+        <div class="header-title">Wallet Balance Dashboard</div>
+    </div>
+    
+    <div class="wallet-card">
+        <div class="wallet-circle"><i class="fa-solid fa-wallet"></i></div>
+        <div class="wallet-bal-lbl">Wallet Total Balance</div>
+        <div class="wallet-bal-val">₹<span id="totalBalanceVal">0.00</span></div>
+    </div>
+    
+    <div class="wallet-menu-grid">
+        <a href="recharge.html" class="wallet-menu-btn">
+            <i class="fa-solid fa-money-bill-transfer icon-deposit"></i>
+            <span>Deposit / Recharge</span>
+        </a>
+        <a href="withdraw.html" class="wallet-menu-btn">
+            <i class="fa-solid fa-hand-holding-dollar icon-withdraw"></i>
+            <span>Withdraw Cash</span>
+        </a>
+    </div>
+    
+    <!-- Pending/Recent transactions history card -->
+    <div class="history-card">
+        <div class="history-card-title">
+            <i class="fa-solid fa-receipt"></i> Recent Transactions History
+        </div>
+        <div id="transactionsList">
+            <div class="text-center text-muted py-3">Loading transaction histories...</div>
+        </div>
+    </div>
+    
+    <!-- Footer Nav -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item-btn"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="activity.html" class="nav-item-btn"><i class="fa-solid fa-gift"></i>Activity</a>
+        <a href="promotion.html" class="nav-item-btn"><i class="fa-solid fa-gem"></i>Promotion</a>
+        <a href="recharge.html" class="nav-item-btn active"><i class="fa-solid fa-wallet"></i>Wallet</a>
+        <a href="account.html" class="nav-item-btn"><i class="fa-solid fa-user"></i>Account</a>
+    </div>
+</div>
+
+<!-- Firebase API Helper -->
+<script src="firebase-config.js"></script>
+<script>
+    const username = localStorage.getItem('wingo_user');
+    if (!username) {
+        window.location.href = 'login.html';
+    }
+
+    async function loadWalletDetails() {
+        // Fetch Balance
+        const profile = await firebaseRequest(`users/${username}`);
+        if (profile) {
+            document.getElementById('totalBalanceVal').innerText = parseFloat(profile.balance ?? 0).toFixed(2);
+        }
+        
+        // Fetch Recharges
+        const recharges = await firebaseRequest('recharges');
+        const listContainer = document.getElementById('transactionsList');
+        listContainer.innerHTML = '';
+        
+        let txCount = 0;
+        
+        if (recharges) {
+            Object.keys(recharges).forEach(utr => {
+                const req = recharges[utr];
+                if (req.username === username) {
+                    txCount++;
+                    const div = document.createElement('div');
+                    div.className = 'history-item';
+                    div.innerHTML = `
+                        <div class="item-info">
+                            <span class="item-title">Deposit (UTR: ${req.utr})</span>
+                            <span class="item-time">${req.time}</span>
+                        </div>
+                        <span class="item-amt ${req.status === 'approved' ? 'amt-success' : 'amt-pending'}">
+                            ₹${parseFloat(req.amount).toFixed(2)} (${req.status})
+                        </span>
+                    `;
+                    listContainer.appendChild(div);
+                }
+            });
+        }
+        
+        // Fetch Withdrawals
+        const withdrawals = await firebaseRequest('withdrawals');
+        if (withdrawals) {
+            Object.keys(withdrawals).forEach(wid => {
+                const req = withdrawals[wid];
+                if (req.username === username) {
+                    txCount++;
+                    const div = document.createElement('div');
+                    div.className = 'history-item';
+                    div.innerHTML = `
+                        <div class="item-info">
+                            <span class="item-title">Withdraw (Ref: ${wid.slice(-6)})</span>
+                            <span class="item-time">${req.time}</span>
+                        </div>
+                        <span class="item-amt ${req.status === 'approved' ? 'amt-success' : 'amt-pending'}">
+                            -₹${parseFloat(req.amount).toFixed(2)} (${req.status})
+                        </span>
+                    `;
+                    listContainer.appendChild(div);
+                }
+            });
+        }
+        
+        if (txCount === 0) {
+            listContainer.innerHTML = `<div class="text-center text-muted py-3">No recent transaction records found.</div>`;
+        }
+    }
+
+    loadWalletDetails();
+</script>
+</body>
+</html>

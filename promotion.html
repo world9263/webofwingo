@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OK.Win - Promotion Center</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f9fc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+            padding-bottom: 75px;
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 420px) {
+            .app-container {
+                min-height: 95vh;
+                border-radius: 20px;
+                overflow: hidden;
+            }
+        }
+        
+        .header-banner {
+            background: linear-gradient(135deg, #ff6c6c, #f24747);
+            color: white;
+            padding: 30px 20px 60px 20px;
+            text-align: center;
+            position: relative;
+        }
+        .back-icon {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: white;
+            font-size: 1.3rem;
+            text-decoration: none;
+        }
+        .header-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        
+        /* Card Panel overlaps banner */
+        .promotion-card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin: -35px 15px 15px 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            z-index: 10;
+            position: relative;
+            text-align: center;
+        }
+        .commission-amount {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #f24747;
+            margin-bottom: 4px;
+        }
+        .commission-lbl {
+            font-size: 0.85rem;
+            color: #7f8c9d;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .btn-claim-bonus {
+            background: linear-gradient(135deg, #ff8181, #f24747);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            font-weight: 700;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(242, 71, 71, 0.2);
+            transition: all 0.2s ease;
+        }
+        .btn-claim-bonus:active {
+            transform: scale(0.97);
+        }
+
+        /* Referral Link panel */
+        .link-card {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            margin: 0 15px 15px 15px;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+        }
+        .link-lbl { font-size: 0.8rem; font-weight: 600; color: #7f8c9d; margin-bottom: 8px; }
+        .invite-code-box {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #2c3e50;
+            background-color: white;
+            padding: 8px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            border: 1px dashed #dee2e6;
+        }
+        .copy-btn {
+            background-color: white;
+            border: 1px solid #ff6c6c;
+            color: #ff6c6c;
+            font-weight: 700;
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin: 0 auto;
+        }
+
+        /* Tier network representation */
+        .network-section {
+            padding: 0 15px;
+        }
+        .section-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .section-title i { color: #f24747; }
+        
+        .tier-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .tier-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e9ecef;
+        }
+        .tier-badge {
+            background-color: #ffeff0;
+            color: #f24747;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        .tier-stats {
+            text-align: right;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #ffffff;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.04);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+        .nav-item-btn {
+            color: #7f8c9d;
+            text-decoration: none;
+            font-size: 0.72rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+        }
+        .nav-item-btn.active { color: #f24747; }
+        .nav-item-btn i { font-size: 1.25rem; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-banner">
+        <a href="index.html" class="back-icon"><i class="fa-solid fa-chevron-left"></i></a>
+        <div class="header-title">Promotion Dashboard</div>
+    </div>
+    
+    <div class="promotion-card">
+        <div class="commission-amount">₹<span id="commissionVal">0.00</span></div>
+        <div class="commission-lbl">Unclaimed Commissions</div>
+        <button class="btn-claim-bonus" id="claimBonusBtn">Transfer to Wallet</button>
+    </div>
+    
+    <div class="link-card text-center">
+        <div class="link-lbl">Your Invite Referral Code</div>
+        <div class="invite-code-box" id="inviteCodeVal">WINGO000000</div>
+        
+        <button class="copy-btn" id="copyLinkBtn">
+            <i class="fa-solid fa-copy"></i> Copy Referral Link
+        </button>
+    </div>
+    
+    <div class="network-section">
+        <div class="section-title">
+            <i class="fa-solid fa-network-wired"></i> Affiliate Networks Tiers
+        </div>
+        <div class="tier-list">
+            <div class="tier-item">
+                <span class="tier-badge">Level 1 Direct</span>
+                <span class="tier-stats"><span id="level1Count">0</span> users</span>
+            </div>
+            <div class="tier-item">
+                <span class="tier-badge">Level 2 Indirect</span>
+                <span class="tier-stats"><span id="level2Count">0</span> users</span>
+            </div>
+            <div class="tier-item">
+                <span class="tier-badge">Level 3 Affiliate</span>
+                <span class="tier-stats"><span id="level3Count">0</span> users</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Shared Footer Nav -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item-btn"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="activity.html" class="nav-item-btn"><i class="fa-solid fa-gift"></i>Activity</a>
+        <a href="promotion.html" class="nav-item-btn active"><i class="fa-solid fa-gem"></i>Promotion</a>
+        <a href="recharge.html" class="nav-item-btn"><i class="fa-solid fa-wallet"></i>Wallet</a>
+        <a href="account.html" class="nav-item-btn"><i class="fa-solid fa-user"></i>Account</a>
+    </div>
+</div>
+
+<!-- Firebase API Helper -->
+<script src="firebase-config.js"></script>
+<script>
+    const username = localStorage.getItem('wingo_user');
+    if (!username) {
+        window.location.href = 'login.html';
+    }
+
+    let userBalance = 0;
+    let commissionBonus = 0;
+    let usercode = '';
+
+    async function loadPromotionStats() {
+        // Fetch user data
+        const profile = await firebaseRequest(`users/${username}`);
+        if (profile) {
+            userBalance = profile.balance ?? 0;
+            commissionBonus = profile.bonus ?? 0;
+            usercode = profile.usercode ?? 'WINGO';
+            
+            document.getElementById('commissionVal').innerText = parseFloat(commissionBonus).toFixed(2);
+            document.getElementById('inviteCodeVal').innerText = usercode;
+        }
+        
+        // Scan Firebase `/users` to determine direct referrals counts
+        const allUsers = await firebaseRequest('users');
+        let level1 = 0;
+        let level2 = 0;
+        let level3 = 0;
+        
+        if (allUsers && usercode) {
+            const level1Names = [];
+            const level2Names = [];
+            
+            // Level 1: Users who registered with this user's usercode as referrer
+            Object.keys(allUsers).forEach(uname => {
+                const u = allUsers[uname];
+                if (u.refcode === usercode) {
+                    level1++;
+                    level1Names.push(u.usercode);
+                }
+            });
+            
+            // Level 2: Users who registered with Level 1 users codes
+            Object.keys(allUsers).forEach(uname => {
+                const u = allUsers[uname];
+                if (u.refcode && level1Names.includes(u.refcode)) {
+                    level2++;
+                    level2Names.push(u.usercode);
+                }
+            });
+            
+            // Level 3: Users who registered with Level 2 users codes
+            Object.keys(allUsers).forEach(uname => {
+                const u = allUsers[uname];
+                if (u.refcode && level2Names.includes(u.refcode)) {
+                    level3++;
+                }
+            });
+        }
+        
+        document.getElementById('level1Count').innerText = level1;
+        document.getElementById('level2Count').innerText = level2;
+        document.getElementById('level3Count').innerText = level3;
+    }
+
+    // Transfer commission bonus to main wallet balance
+    document.getElementById('claimBonusBtn').addEventListener('click', async () => {
+        if (commissionBonus <= 0) {
+            alert("No commissions to claim.");
+            return;
+        }
+        
+        const claimAmount = commissionBonus;
+        userBalance += claimAmount;
+        commissionBonus = 0;
+        
+        // Update both wallet balance and bonus to 0 in Firebase
+        const balRes = await firebaseRequest(`users/${username}/balance`, 'PUT', userBalance);
+        const bonusRes = await firebaseRequest(`users/${username}/bonus`, 'PUT', commissionBonus);
+        
+        if (balRes !== null && bonusRes !== null) {
+            alert(`Successfully transferred ₹${claimAmount.toFixed(2)} to main wallet!`);
+            document.getElementById('commissionVal').innerText = "0.00";
+            loadPromotionStats();
+        } else {
+            alert("Claim failed. Please check internet connection.");
+        }
+    });
+
+    // Copy unique referral link
+    document.getElementById('copyLinkBtn').addEventListener('click', () => {
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+        const refUrl = `${protocol}//${host}/login.html?ref=${usercode}`;
+        
+        // Create dummy textarea to execute copy
+        const el = document.createElement('textarea');
+        el.value = refUrl;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        
+        alert("Referral Link copied to clipboard!");
+    });
+
+    loadPromotionStats();
+</script>
+</body>
+</html>

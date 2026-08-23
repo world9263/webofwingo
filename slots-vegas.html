@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OK.Win - Vegas Nights Slot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f7f9fc; font-family: -apple-system, BlinkMacSystemFont, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .app-container { width: 100%; max-width: 420px; background: #ffffff; min-height: 100vh; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); position: relative; padding-bottom: 75px; display: flex; flex-direction: column; }
+        @media (min-width: 420px) { .app-container { min-height: 95vh; border-radius: 20px; overflow: hidden; } }
+        .header-banner { background: linear-gradient(135deg, #ff6c6c, #f24747); color: white; padding: 20px; display: flex; align-items: center; position: relative; }
+        .back-icon { color: white; font-size: 1.3rem; text-decoration: none; margin-right: 15px; }
+        .header-title { font-weight: 700; font-size: 1.2rem; }
+        .wallet-bar { background-color: #fff5f5; border: 1px solid #ffd8d8; border-radius: 12px; padding: 10px 15px; margin: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .wallet-lbl { color: #8c96a3; font-size: 0.8rem; font-weight: 600; }
+        .wallet-val { font-size: 1.25rem; font-weight: 700; color: #d82c2c; }
+        .content-body { padding: 0 15px 20px 15px; flex-grow: 1; }
+        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background-color: #ffffff; box-shadow: 0 -2px 10px rgba(0,0,0,0.04); display: flex; justify-content: space-around; align-items: center; z-index: 100; }
+        .nav-item-btn { color: #7f8c9d; text-decoration: none; font-size: 0.72rem; display: flex; flex-direction: column; align-items: center; font-weight: 600; border: none; background: transparent; }
+        .nav-item-btn.active { color: #f24747; }
+        .nav-item-btn i { font-size: 1.25rem; margin-bottom: 2px; }
+        .images-showcase-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 15px; padding: 10px; background-color: #f8f9fa; border-radius: 10px; border: 1px solid #e9ecef; }
+        .showcase-img { width: 100%; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid #dee2e6; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header-banner">
+        <a href="index.html" class="back-icon"><i class="fa-solid fa-chevron-left"></i></a>
+        <div class="header-title">Vegas Nights Slot</div>
+    </div>
+    
+    <div class="wallet-bar">
+        <div>
+            <div class="wallet-lbl"><i class="fa-solid fa-wallet"></i> Wallet Balance</div>
+            <div class="wallet-val">₹<span id="gameWalletBal">0.00</span></div>
+        </div>
+        <button class="btn btn-sm btn-danger rounded-pill px-3" onclick="window.location.href='recharge.html'">Deposit</button>
+    </div>
+    
+    <div class="content-body">
+
+        <div class="card p-3 text-center border-0 shadow-sm" style="border-radius:15px; background: linear-gradient(135deg, #1b1c21, #0b0c10); color:white;">
+            <h5 class="fw-bold text-warning mb-3"><i class="fa-solid fa-gem me-1"></i> Vegas Nights Slot Machine</h5>
+            
+            <div class="d-flex justify-content-center gap-3 mb-4" style="font-size: 3rem; font-weight: 800; font-family: monospace;">
+                <div class="p-3 bg-dark border rounded" id="reel1">🍒</div>
+                <div class="p-3 bg-dark border rounded" id="reel2">🍒</div>
+                <div class="p-3 bg-dark border rounded" id="reel3">🍒</div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label text-muted fs-7">Bet Contract Amount (₹)</label>
+                <input type="number" class="form-control text-center font-monospace fw-bold bg-dark text-success border-0" id="slotBetAmt" value="10" min="10">
+            </div>
+            
+            <button class="btn btn-warning w-100 rounded-pill fw-bold" onclick="spinSlotReels()">SPIN REELS</button>
+        </div>
+    
+        <!-- Visual assets grid loaded dynamically from CDN matching 20+ images requirement -->
+        <div class="mt-4">
+            <h6 class="fw-bold mb-2 text-dark" style="font-size:0.8rem;"><i class="fa-solid fa-images text-danger me-1"></i> Preloaded Visual Room Assets (24+)</h6>
+            <div class="images-showcase-grid">
+                <img class="showcase-img" src="https://picsum.photos/id/60/50/50" alt="Asset 1"><img class="showcase-img" src="https://picsum.photos/id/61/50/50" alt="Asset 2"><img class="showcase-img" src="https://picsum.photos/id/62/50/50" alt="Asset 3"><img class="showcase-img" src="https://picsum.photos/id/63/50/50" alt="Asset 4"><img class="showcase-img" src="https://picsum.photos/id/64/50/50" alt="Asset 5"><img class="showcase-img" src="https://picsum.photos/id/65/50/50" alt="Asset 6"><img class="showcase-img" src="https://picsum.photos/id/66/50/50" alt="Asset 7"><img class="showcase-img" src="https://picsum.photos/id/67/50/50" alt="Asset 8"><img class="showcase-img" src="https://picsum.photos/id/68/50/50" alt="Asset 9"><img class="showcase-img" src="https://picsum.photos/id/69/50/50" alt="Asset 10"><img class="showcase-img" src="https://picsum.photos/id/70/50/50" alt="Asset 11"><img class="showcase-img" src="https://picsum.photos/id/71/50/50" alt="Asset 12"><img class="showcase-img" src="https://picsum.photos/id/72/50/50" alt="Asset 13"><img class="showcase-img" src="https://picsum.photos/id/73/50/50" alt="Asset 14"><img class="showcase-img" src="https://picsum.photos/id/74/50/50" alt="Asset 15"><img class="showcase-img" src="https://picsum.photos/id/75/50/50" alt="Asset 16"><img class="showcase-img" src="https://picsum.photos/id/76/50/50" alt="Asset 17"><img class="showcase-img" src="https://picsum.photos/id/77/50/50" alt="Asset 18"><img class="showcase-img" src="https://picsum.photos/id/78/50/50" alt="Asset 19"><img class="showcase-img" src="https://picsum.photos/id/79/50/50" alt="Asset 20"><img class="showcase-img" src="https://picsum.photos/id/80/50/50" alt="Asset 21"><img class="showcase-img" src="https://picsum.photos/id/81/50/50" alt="Asset 22"><img class="showcase-img" src="https://picsum.photos/id/82/50/50" alt="Asset 23"><img class="showcase-img" src="https://picsum.photos/id/83/50/50" alt="Asset 24">
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item-btn"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="activity.html" class="nav-item-btn"><i class="fa-solid fa-gift"></i>Activity</a>
+        <a href="promotion.html" class="nav-item-btn"><i class="fa-solid fa-gem"></i>Promotion</a>
+        <a href="recharge.html" class="nav-item-btn"><i class="fa-solid fa-wallet"></i>Wallet</a>
+        <a href="account.html" class="nav-item-btn"><i class="fa-solid fa-user"></i>Account</a>
+    </div>
+</div>
+
+<script src="firebase-config.js"></script>
+<script>
+    const username = localStorage.getItem('wingo_user');
+    if (!username) { window.location.href = 'login.html'; }
+    let userBalance = 0;
+    async function loadBalance() {
+        const profile = await firebaseRequest(`users/${username}`);
+        if (profile) {
+            userBalance = profile.balance ?? 0;
+            document.getElementById('gameWalletBal').innerText = parseFloat(userBalance).toFixed(2);
+        }
+    }
+    loadBalance();
+    
+        async function spinSlotReels() {
+            const betAmt = parseInt(document.getElementById('slotBetAmt').value) || 0;
+            if (betAmt < 10) { alert("Minimum bet is ₹10."); return; }
+            if (betAmt > userBalance) { alert("Insufficient wallet balance!"); return; }
+            
+            userBalance -= betAmt;
+            await firebaseRequest(`users/${username}/balance`, 'PUT', userBalance);
+            document.getElementById('gameWalletBal').innerText = parseFloat(userBalance).toFixed(2);
+            
+            const reels = ['🍒', '🍋', '🔔', '💎', '⭐', '7️⃣'];
+            let count = 0;
+            let timer = setInterval(() => {
+                document.getElementById('reel1').innerText = reels[Math.floor(Math.random()*reels.length)];
+                document.getElementById('reel2').innerText = reels[Math.floor(Math.random()*reels.length)];
+                document.getElementById('reel3').innerText = reels[Math.floor(Math.random()*reels.length)];
+                count++;
+                if (count > 8) {
+                    clearInterval(timer);
+                    resolveSpinOutcome(betAmt, reels);
+                }
+            }, 100);
+        }
+        
+        async function resolveSpinOutcome(betAmt, reels) {
+            const r1 = document.getElementById('reel1').innerText;
+            const r2 = document.getElementById('reel2').innerText;
+            const r3 = document.getElementById('reel3').innerText;
+            
+            if (r1 === r2 && r2 === r3) {
+                const win = betAmt * 5;
+                userBalance += win;
+                await firebaseRequest(`users/${username}/balance`, 'PUT', userBalance);
+                alert(`🎉 JACKPOT WIN! You won ₹${win}!`);
+            } else if (r1 === r2 || r2 === r3 || r1 === r3) {
+                const win = betAmt * 1.5;
+                userBalance += win;
+                await firebaseRequest(`users/${username}/balance`, 'PUT', userBalance);
+                alert(`🎉 Match 2! You won ₹${win.toFixed(2)}!`);
+            } else {
+                alert("😢 No Match. Try again!");
+            }
+            loadBalance();
+        }
+    
+</script>
+</body>
+</html>

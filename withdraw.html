@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OK.Win - Withdraw Cash</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f1f3f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+            padding-bottom: 70px;
+        }
+        @media (min-width: 420px) {
+            .app-container {
+                min-height: 95vh;
+                border-radius: 20px;
+                overflow: hidden;
+            }
+        }
+        .header-section {
+            background: linear-gradient(135deg, #ff6c6c, #f24747);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .header-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-left: 15px;
+        }
+        .back-btn {
+            color: white;
+            font-size: 1.3rem;
+            background: transparent;
+            border: none;
+        }
+        .content-body {
+            padding: 20px;
+        }
+        .balance-card {
+            background-color: #fff5f5;
+            border: 1px solid #ffd8d8;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .balance-lbl { color: #8c96a3; font-size: 0.85rem; }
+        .balance-val { font-size: 1.3rem; font-weight: 700; color: #d82c2c; }
+        
+        .form-label { font-weight: 600; color: #495057; }
+        .btn-primary {
+            background: linear-gradient(135deg, #ff8181, #f24747);
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(251, 78, 78, 0.3);
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover, .btn-primary:active {
+            background: linear-gradient(135deg, #e03d3d, #c22222) !important;
+        }
+        
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #ffffff;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .nav-item-btn {
+            color: #7f8c9d;
+            text-decoration: none;
+            font-size: 0.72rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+        }
+        .nav-item-btn.active { color: #f24747; }
+        .nav-item-btn i { font-size: 1.25rem; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-section">
+        <button class="back-btn" onclick="window.location.href='wallet.html'"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="header-title">Withdraw Cash</div>
+    </div>
+    
+    <div class="content-body">
+        <div class="balance-card">
+            <div>
+                <div class="balance-lbl">Withdrawable Balance</div>
+                <div class="balance-val">₹<span id="withdrawBalance">0.00</span></div>
+            </div>
+            <i class="fa-solid fa-money-check-dollar text-danger fa-2x opacity-25"></i>
+        </div>
+        
+        <form id="withdrawForm">
+            <div class="mb-3">
+                <label class="form-label">Enter Withdrawal Amount (₹)</label>
+                <input type="number" class="form-control form-control-lg font-monospace text-danger fw-bold" id="withdrawAmount" min="200" value="200" required>
+                <small class="text-muted">Minimum withdrawal is ₹200. Fee is 0%.</small>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Choose Withdrawal Method</label>
+                <select class="form-select" id="withdrawMethod" onchange="toggleMethodFields()">
+                    <option value="upi">UPI Address</option>
+                    <option value="bank">Bank Card / Payout</option>
+                </select>
+            </div>
+            
+            <!-- UPI Fields -->
+            <div id="upiFieldsGroup" class="mb-3">
+                <label class="form-label">UPI ID Address</label>
+                <input type="text" class="form-control" id="withdrawUPI" placeholder="username@upi">
+            </div>
+            
+            <!-- Bank Card Fields -->
+            <div id="bankFieldsGroup" class="d-none mb-3">
+                <div class="mb-2">
+                    <label class="form-label">Bank Account Number</label>
+                    <input type="text" class="form-control" id="bankAccNo" placeholder="Enter bank account no.">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Bank Name</label>
+                    <input type="text" class="form-control" id="bankName" placeholder="e.g. State Bank of India">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">IFSC Code</label>
+                    <input type="text" class="form-control" id="bankIFSC" placeholder="e.g. SBIN0001234">
+                </div>
+            </div>
+            
+            <div id="withdrawAlert" class="alert alert-danger d-none py-2 text-center" role="alert"></div>
+            <div id="withdrawSuccess" class="alert alert-success d-none py-2 text-center" role="alert"></div>
+            
+            <button type="submit" class="btn btn-primary w-100 mt-2">Submit Cashout Request</button>
+        </form>
+    </div>
+    
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item-btn"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="activity.html" class="nav-item-btn"><i class="fa-solid fa-gift"></i>Activity</a>
+        <a href="promotion.html" class="nav-item-btn"><i class="fa-solid fa-gem"></i>Promotion</a>
+        <a href="recharge.html" class="nav-item-btn active"><i class="fa-solid fa-wallet"></i>Wallet</a>
+        <a href="account.html" class="nav-item-btn"><i class="fa-solid fa-user"></i>Account</a>
+    </div>
+</div>
+
+<!-- Firebase API Helper -->
+<script src="firebase-config.js"></script>
+<script>
+    const username = localStorage.getItem('wingo_user');
+    if (!username) {
+        window.location.href = 'login.html';
+    }
+
+    let userBalance = 0;
+
+    async function loadWithdrawBalance() {
+        const profile = await firebaseRequest(`users/${username}`);
+        if (profile) {
+            userBalance = profile.balance ?? 0;
+            document.getElementById('withdrawBalance').innerText = parseFloat(userBalance).toFixed(2);
+        }
+    }
+
+    function toggleMethodFields() {
+        const method = document.getElementById('withdrawMethod').value;
+        const upiGroup = document.getElementById('upiFieldsGroup');
+        const bankGroup = document.getElementById('bankFieldsGroup');
+        
+        if (method === 'upi') {
+            upiGroup.classList.remove('d-none');
+            bankGroup.classList.add('d-none');
+        } else {
+            upiGroup.classList.add('d-none');
+            bankGroup.classList.remove('d-none');
+        }
+    }
+
+    document.getElementById('withdrawForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const amount = parseInt(document.getElementById('withdrawAmount').value) || 0;
+        const method = document.getElementById('withdrawMethod').value;
+        
+        const alertEl = document.getElementById('withdrawAlert');
+        const successEl = document.getElementById('withdrawSuccess');
+        alertEl.classList.add('d-none');
+        successEl.classList.add('d-none');
+        
+        if (amount < 200) {
+            alertEl.innerText = "Minimum withdrawal request is ₹200.";
+            alertEl.classList.remove('d-none');
+            return;
+        }
+        
+        if (amount > userBalance) {
+            alertEl.innerText = "Insufficient wallet balance to cash out.";
+            alertEl.classList.remove('d-none');
+            return;
+        }
+        
+        let details = {};
+        if (method === 'upi') {
+            const upi = document.getElementById('withdrawUPI').value.trim();
+            if (!upi) {
+                alertEl.innerText = "Please enter your UPI ID Address.";
+                alertEl.classList.remove('d-none');
+                return;
+            }
+            details = { upi: upi };
+        } else {
+            const acc = document.getElementById('bankAccNo').value.trim();
+            const name = document.getElementById('bankName').value.trim();
+            const ifsc = document.getElementById('bankIFSC').value.trim();
+            if (!acc || !name || !ifsc) {
+                alertEl.innerText = "Please fill all bank card information fields.";
+                alertEl.classList.remove('d-none');
+                return;
+            }
+            details = { acc: acc, name: name, ifsc: ifsc };
+        }
+        
+        // Deduct balance from wallet instantly
+        userBalance -= amount;
+        const balanceRes = await firebaseRequest(`users/${username}/balance`, 'PUT', userBalance);
+        
+        if (balanceRes !== null) {
+            const withdrawalId = 'TXWD' + Math.floor(100000 + Math.random() * 900000);
+            const withdrawalReq = {
+                id: withdrawalId,
+                username: username,
+                amount: amount,
+                method: method,
+                details: details,
+                status: "pending",
+                time: new Date().toLocaleString()
+            };
+            
+            const reqRes = await firebaseRequest(`withdrawals/${withdrawalId}`, 'PUT', withdrawalReq);
+            if (reqRes) {
+                successEl.innerText = "Withdrawal request submitted! Auditing will complete in 1-2 hours.";
+                successEl.classList.remove('d-none');
+                document.getElementById('withdrawForm').reset();
+                document.getElementById('withdrawBalance').innerText = parseFloat(userBalance).toFixed(2);
+                
+                setTimeout(() => {
+                    window.location.href = 'wallet.html';
+                }, 3000);
+            } else {
+                // Refund balance in case of request submission failure
+                userBalance += amount;
+                await firebaseRequest(`users/${username}/balance`, 'PUT', userBalance);
+                alertEl.innerText = "Transaction failed to submit. Wallet balance refunded.";
+                alertEl.classList.remove('d-none');
+            }
+        } else {
+            alertEl.innerText = "Connection failed. Please check internet connection.";
+            alertEl.classList.remove('d-none');
+        }
+    });
+
+    loadWithdrawBalance();
+</script>
+</body>
+</html>

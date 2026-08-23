@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo - Color Prediction Game</title>
+    <title>OK.Win - Wingo Game</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f1f3f6;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -21,11 +21,13 @@
         .app-container {
             width: 100%;
             max-width: 420px;
-            background: #f8f9fa;
+            background: #f7f9fc;
             min-height: 100vh;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             position: relative;
-            padding-bottom: 70px; /* space for bottom nav bar */
+            padding-bottom: 75px;
+            display: flex;
+            flex-direction: column;
         }
         @media (min-width: 420px) {
             .app-container {
@@ -34,138 +36,403 @@
                 overflow: hidden;
             }
         }
-        .profile-section {
-            background: linear-gradient(135deg, #fb4e4e, #d82c2c);
-            color: white;
-            padding: 24px 20px;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-        }
-        .balance-title {
-            font-size: 0.9rem;
-            opacity: 0.85;
-            margin-bottom: 2px;
-        }
-        .balance-value {
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-        .user-id {
-            font-size: 0.85rem;
-            background-color: rgba(255, 255, 255, 0.15);
-            padding: 4px 10px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-top: 5px;
-        }
-        .recharge-btn {
-            background-color: #ffffff;
-            color: #d82c2c;
-            font-weight: bold;
-            border-radius: 20px;
-            padding: 6px 16px;
-            font-size: 0.9rem;
-            border: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .game-status-card {
-            background-color: white;
-            border-radius: 12px;
-            margin: 15px;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        
+        /* Red Header */
+        .app-header {
+            background-color: #ff5252;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            color: white;
         }
-        .period-label {
-            font-size: 0.85rem;
-            color: #6c757d;
-        }
-        .period-value {
+        .header-logo {
+            font-weight: 800;
             font-size: 1.2rem;
-            font-weight: 700;
-            color: #212529;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
         }
-        .timer-label {
-            font-size: 0.85rem;
-            color: #6c757d;
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .header-actions i {
+            font-size: 1.2rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Balance Card matches screenshot exactly */
+        .balance-card-container {
+            background-color: #ff5252;
+            padding: 10px 16px 25px 16px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            margin-bottom: 12px;
+        }
+        .balance-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .balance-amount {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #212529;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .balance-refresh-btn {
+            font-size: 1rem;
+            color: #7d889d;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+        .balance-lbl {
+            font-size: 0.8rem;
+            color: #7f8c9d;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+        .balance-lbl i {
+            color: #ff5252;
+        }
+        .balance-actions {
+            display: flex;
+            gap: 15px;
+        }
+        .balance-actions button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .btn-withdraw {
+            background: linear-gradient(135deg, #ff8181, #f24747);
+            color: white;
+        }
+        .btn-deposit {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        /* Notice bar */
+        .notice-bar {
+            background-color: white;
+            border-radius: 30px;
+            margin: 0 12px 12px 12px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .notice-bar i {
+            color: #f24747;
+            font-size: 1.05rem;
+        }
+        .notice-marquee {
+            flex-grow: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 0.76rem;
+            color: #495057;
+        }
+        .notice-detail-btn {
+            background-color: #ff5252;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            box-shadow: 0 2px 6px rgba(255, 82, 82, 0.2);
+        }
+
+        /* Game Timer Selector Buttons */
+        .game-modes-bar {
+            background-color: white;
+            border-radius: 12px;
+            margin: 0 12px 12px 12px;
+            padding: 6px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .mode-btn {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 8px 4px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #7f8c9d;
+            font-size: 0.72rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .mode-btn i {
+            font-size: 1.15rem;
+        }
+        .mode-btn.active {
+            background-color: #ffeff0;
+            color: #f24747;
+        }
+
+        /* Active Period Box */
+        .period-box {
+            background: linear-gradient(135deg, #ff8181, #f24747);
+            color: white;
+            border-radius: 12px;
+            margin: 0 12px 12px 12px;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(242,71,71,0.15);
+        }
+        .period-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .btn-how-to-play {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            padding: 2px 10px;
+            font-weight: 600;
+        }
+        .period-lbl-title {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        .recent-balls-row {
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        .recent-ball {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: white;
+            font-weight: bold;
+        }
+        .ball-red { background-color: #dc3545; }
+        .ball-green { background-color: #28a745; }
+        .ball-violet { background-color: #6f42c1; }
+
+        .timer-info {
             text-align: right;
         }
-        .timer-value {
+        .timer-info-lbl {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        .timer-info-val {
             font-size: 1.5rem;
             font-weight: 800;
-            color: #fb4e4e;
             font-family: monospace;
+            letter-spacing: 1px;
+            margin-top: 4px;
         }
-        .color-buttons {
+        .timer-period-id {
+            font-size: 0.76rem;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        /* Color Betting Option Panel */
+        .color-betting-row {
             display: flex;
-            gap: 10px;
-            margin: 15px;
+            gap: 12px;
+            margin: 0 12px 12px 12px;
         }
-        .btn-color {
+        .btn-bet-color {
             flex: 1;
-            padding: 14px;
-            border-radius: 10px;
+            padding: 10px 0;
             border: none;
             color: white;
             font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-size: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             transition: transform 0.1s ease;
         }
-        .btn-color:active {
-            transform: scale(0.97);
-        }
-        .btn-green { background: linear-gradient(135deg, #28a745, #1e7e34); }
-        .btn-violet { background: linear-gradient(135deg, #6f42c1, #5a32a3); }
-        .btn-red { background: linear-gradient(135deg, #dc3545, #bd2130); }
-        
-        .number-grid {
+        .btn-bet-color:active { transform: scale(0.97); }
+        .btn-bet-green { background: #28a745; }
+        .btn-bet-violet { background: #6f42c1; }
+        .btn-bet-red { background: #dc3545; }
+
+        /* Numeric Betting Grid */
+        .numbers-grid-container {
             background-color: white;
-            border-radius: 12px;
-            margin: 15px;
+            border-radius: 15px;
+            margin: 0 12px 12px 12px;
             padding: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .numbers-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 10px;
         }
-        .btn-number {
+        .btn-circle-num {
             border: none;
-            border-radius: 8px;
-            padding: 10px 0;
-            font-size: 1.2rem;
-            font-weight: bold;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        /* Color Mapping for Wingo numbers */
-        .num-0 { background: linear-gradient(135deg, #6f42c1, #dc3545); } /* violet + red */
-        .num-5 { background: linear-gradient(135deg, #6f42c1, #28a745); } /* violet + green */
-        .num-odd { background: linear-gradient(135deg, #28a745, #1e7e34); } /* green */
-        .num-even { background: linear-gradient(135deg, #dc3545, #bd2130); } /* red */
-
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            padding: 0 15px;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            color: #212529;
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 0 auto;
             display: flex;
             align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+            transition: transform 0.1s ease;
         }
-        .history-card {
+        .btn-circle-num:active { transform: scale(0.95); }
+        
+        .circle-num-0 { background: linear-gradient(135deg, #6f42c1, #dc3545); }
+        .circle-num-5 { background: linear-gradient(135deg, #6f42c1, #28a745); }
+        .circle-num-odd { background: linear-gradient(135deg, #28a745, #1e7e34); }
+        .circle-num-even { background: linear-gradient(135deg, #dc3545, #bd2130); }
+
+        /* Betting helpers multipliers */
+        .helper-bets-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 12px 12px 12px;
+            gap: 8px;
+        }
+        .btn-helper {
+            flex: 1;
+            border: 1px solid #ced4da;
             background-color: white;
-            border-radius: 12px;
-            margin: 15px;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            padding: 6px 0;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #495057;
         }
-        .history-table th { font-size: 0.85rem; color: #6c757d; }
-        .history-table td { font-size: 0.9rem; padding: 10px 0; vertical-align: middle; }
+        .btn-helper.active {
+            background-color: #f24747;
+            color: white;
+            border-color: #f24747;
+        }
+        .btn-helper-random {
+            border-color: #ffc107;
+            color: #ff9800;
+            background-color: #fff9e6;
+        }
+
+        /* Big Small option buttons */
+        .big-small-row {
+            display: flex;
+            gap: 12px;
+            margin: 0 12px 12px 12px;
+        }
+        .btn-big-small {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .btn-big-orange { background: linear-gradient(135deg, #ffa726, #fb8c00); }
+        .btn-small-blue { background: linear-gradient(135deg, #42a5f5, #1e88e5); }
+
+        /* Game history tabs */
+        .history-tabs-container {
+            background-color: white;
+            margin-top: 15px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            flex-grow: 1;
+            padding: 15px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.02);
+        }
+        .history-nav-tabs {
+            display: flex;
+            border-bottom: 2px solid #f1f3f6;
+            margin-bottom: 12px;
+        }
+        .history-tab-link {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #7f8c9d;
+            border: none;
+            background: transparent;
+            position: relative;
+        }
+        .history-tab-link.active {
+            color: #f24747;
+        }
+        .history-tab-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 20%;
+            width: 60%;
+            height: 2px;
+            background-color: #f24747;
+        }
+
+        /* History Table */
+        .history-table th {
+            font-size: 0.72rem;
+            color: #8c96a3;
+            text-transform: uppercase;
+            font-weight: 600;
+            border-bottom: 1px solid #f1f3f6;
+        }
+        .history-table td {
+            font-size: 0.8rem;
+            color: #495057;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f3f6;
+            vertical-align: middle;
+        }
         .circle-badge {
             width: 24px;
             height: 24px;
@@ -176,13 +443,17 @@
             color: white;
             font-weight: bold;
             font-size: 0.8rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .circle-red { background-color: #dc3545; }
-        .circle-green { background-color: #28a745; }
-        .circle-violet { background-color: #6f42c1; }
-        .circle-redviolet { background: linear-gradient(135deg, #6f42c1, #dc3545); }
-        .circle-greenviolet { background: linear-gradient(135deg, #6f42c1, #28a745); }
-        
+        .dot-badge {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 2px;
+        }
+
+        /* Bottom Nav */
         .bottom-nav {
             position: absolute;
             bottom: 0;
@@ -190,29 +461,29 @@
             width: 100%;
             height: 60px;
             background-color: #ffffff;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.04);
             display: flex;
             justify-content: space-around;
             align-items: center;
+            z-index: 100;
         }
         .nav-item-btn {
-            color: #8c96a3;
+            color: #7f8c9d;
             text-decoration: none;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             display: flex;
             flex-direction: column;
             align-items: center;
             font-weight: 600;
             border: none;
             background: transparent;
+            position: relative;
         }
-        .nav-item-btn.active { color: #fb4e4e; }
-        .nav-item-btn i { font-size: 1.3rem; margin-bottom: 2px; }
+        .nav-item-btn.active { color: #f24747; }
+        .nav-item-btn i { font-size: 1.25rem; margin-bottom: 2px; }
 
-        /* Modal styling */
+        /* Modal custom layout */
         .modal-content { border-radius: 15px; border: none; }
-        .modal-header { border-bottom: none; }
-        .modal-footer { border-top: none; }
         .chip-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
         .chip-btn {
             border: 1px solid #ced4da;
@@ -224,356 +495,859 @@
             color: #495057;
         }
         .chip-btn.active {
-            background-color: #fb4e4e;
+            background-color: #f24747;
             color: white;
-            border-color: #fb4e4e;
+            border-color: #f24747;
+        }
+
+        /* Custom Win/Loss Overlay Modal matching user screenshot */
+        .game-result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .result-popup-card {
+            width: 320px;
+            background: linear-gradient(135deg, #ff9800, #ff5722);
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            color: white;
+        }
+        .result-popup-card.loss-theme {
+            background: linear-gradient(135deg, #78909c, #37474f);
+        }
+        .result-popup-header {
+            position: absolute;
+            top: -55px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .result-popup-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-top: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .result-popup-sub {
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.95;
+        }
+        .badge-capsule {
+            background-color: #2ecc71;
+            color: white;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+        .badge-capsule.badge-red { background-color: #e74c3c; }
+        .badge-capsule.badge-violet { background-color: #9b59b6; }
+        .badge-capsule.badge-circle {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: #2ecc71;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        .badge-capsule.badge-circle.red-circle { background-color: #e74c3c; }
+        .badge-capsule.badge-circle.violet-circle { background-color: #9b59b6; }
+        .result-popup-slip {
+            background-color: #ffffff;
+            border-radius: 12px;
+            color: #212529;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+            background-image: radial-gradient(circle at 0 100%, transparent 12px, #fff 13px), radial-gradient(circle at 100% 100%, transparent 12px, #fff 13px);
+        }
+        .slip-label {
+            font-size: 0.78rem;
+            color: #ff5722;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .slip-label.loss-color {
+            color: #78909c;
+        }
+        .slip-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #d84315;
+            margin: 5px 0;
+        }
+        .slip-value.loss-val {
+            color: #37474f;
+        }
+        .slip-period {
+            font-size: 0.72rem;
+            color: #7f8c9d;
+            font-weight: 600;
+        }
+        .auto-close-lbl {
+            font-size: 0.8rem;
+            color: white;
+            opacity: 0.9;
+        }
+        .close-popup-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin: 20px auto 0 auto;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .close-popup-btn:active {
+            transform: scale(0.9);
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- User Account Header Banner -->
-    <div class="profile-section d-flex justify-content-between align-items-center">
-        <div>
-            <div class="balance-title">Wallet Balance</div>
-            <div class="balance-value">₹<span id="userBalance">0.00</span></div>
-            <div class="user-id"><i class="fa-solid fa-user-tag me-1"></i>ID: <span id="userCode">WINGO</span></div>
+    <!-- Red Header panel -->
+    <header class="app-header">
+        <a href="index.html" class="header-logo"><i class="fa-solid fa-chevron-left"></i> OK.Win</a>
+        <div class="header-actions">
+            <i class="fa-solid fa-headphones-simple" onclick="window.location.href='customer-service.html'"></i>
+            <i class="fa-solid fa-volume-high" onclick="toggleMuteSound()"></i>
         </div>
-        <button class="recharge-btn" onclick="window.location.href='recharge.html'"><i class="fa-solid fa-plus-circle me-1"></i>Recharge</button>
-    </div>
+    </header>
 
-    <!-- Active Game Period Countdown Card -->
-    <div class="game-status-card">
-        <div>
-            <div class="period-label"><i class="fa-solid fa-clock-rotate-left me-1"></i>Active Period</div>
-            <div class="period-value" id="gamePeriod">20260823001</div>
+    <!-- Wallet card showing balance exactly as screenshot -->
+    <div class="balance-card-container">
+        <div class="balance-card">
+            <div class="balance-amount">
+                ₹<span id="userBalanceVal">0.00</span>
+                <button class="balance-refresh-btn" onclick="refreshBalance()"><i class="fa-solid fa-arrows-rotate"></i></button>
+            </div>
+            <div class="balance-lbl">
+                <i class="fa-solid fa-wallet"></i> Wallet balance
+            </div>
+            <div class="balance-actions">
+                <button class="btn-withdraw" onclick="window.location.href='withdraw.html'">Withdraw</button>
+                <button class="btn-deposit" onclick="window.location.href='recharge.html'">Deposit</button>
+            </div>
         </div>
-        <div>
-            <div class="timer-label">Time Remaining</div>
-            <div class="timer-value" id="gameTimer">03:00</div>
+    </div>
+
+    <!-- Announcement ticker notice -->
+    <div class="notice-bar">
+        <i class="fa-solid fa-volume-high"></i>
+        <div class="notice-marquee">
+            <marquee scrollamount="3">Please note that live chat is no longer available. Kindly do not save our live chat link as it might be fraudulent.</marquee>
+        </div>
+        <button class="notice-detail-btn" onclick="alert('Notice: Customer service channels remain active 24/7.')">
+            <i class="fa-solid fa-fire"></i> Detail
+        </button>
+    </div>
+
+    <!-- Game timer modes selector -->
+    <div class="game-modes-bar">
+        <button class="mode-btn active" id="mode-30s" onclick="changeGameMode(30)">
+            <i class="fa-solid fa-clock" style="color: #ff5252;"></i> WinGo 30s
+        </button>
+        <button class="mode-btn" id="mode-60s" onclick="changeGameMode(60)">
+            <i class="fa-solid fa-clock" style="color: #adb5bd;"></i> WinGo 1 Min
+        </button>
+        <button class="mode-btn" id="mode-180s" onclick="changeGameMode(180)">
+            <i class="fa-solid fa-clock" style="color: #adb5bd;"></i> WinGo 3 Min
+        </button>
+        <button class="mode-btn" id="mode-300s" onclick="changeGameMode(300)">
+            <i class="fa-solid fa-clock" style="color: #adb5bd;"></i> WinGo 5 Min
+        </button>
+    </div>
+
+    <!-- Active game period status countdown card -->
+    <div class="period-box">
+        <div class="period-info">
+            <button class="btn-how-to-play mb-2" onclick="window.location.href='about.html'"><i class="fa-solid fa-book-open"></i> How to play</button>
+            <div class="period-lbl-title" id="selectedModeTitle">WinGo 30s</div>
+            <div class="recent-balls-row" id="recentBallsRow">
+                <!-- Last 5 balls -->
+            </div>
+        </div>
+        <div class="timer-info">
+            <div class="timer-info-lbl">Time remaining</div>
+            <div class="timer-info-val" id="countdownVal">00:30</div>
+            <div class="timer-period-id" id="activePeriodVal">202608230001</div>
         </div>
     </div>
 
-    <!-- Color Bet Buttons -->
-    <div class="color-buttons">
-        <button class="btn-color btn-green" onclick="openBetModal('green')">Green</button>
-        <button class="btn-color btn-violet" onclick="openBetModal('violet')">Violet</button>
-        <button class="btn-color btn-red" onclick="openBetModal('red')">Red</button>
+    <!-- Color bets option row -->
+    <div class="color-betting-row">
+        <button class="btn-bet-color btn-bet-green" onclick="openBetModal('green')">Green</button>
+        <button class="btn-bet-color btn-bet-violet" onclick="openBetModal('violet')">Violet</button>
+        <button class="btn-bet-color btn-bet-red" onclick="openBetModal('red')">Red</button>
     </div>
 
-    <!-- Number Bet Buttons -->
-    <div class="number-grid">
-        <button class="btn-number num-0" onclick="openBetModal('0')">0</button>
-        <button class="btn-number num-odd" onclick="openBetModal('1')">1</button>
-        <button class="btn-number num-even" onclick="openBetModal('2')">2</button>
-        <button class="btn-number num-odd" onclick="openBetModal('3')">3</button>
-        <button class="btn-number num-even" onclick="openBetModal('4')">4</button>
-        <button class="btn-number num-5" onclick="openBetModal('5')">5</button>
-        <button class="btn-number num-even" onclick="openBetModal('6')">6</button>
-        <button class="btn-number num-odd" onclick="openBetModal('7')">7</button>
-        <button class="btn-number num-even" onclick="openBetModal('8')">8</button>
-        <button class="btn-number num-odd" onclick="openBetModal('9')">9</button>
+    <!-- Numbers selection circular grid -->
+    <div class="numbers-grid-container">
+        <div class="numbers-grid">
+            <button class="btn-circle-num circle-num-0" onclick="openBetModal('0')">0</button>
+            <button class="btn-circle-num circle-num-odd" onclick="openBetModal('1')">1</button>
+            <button class="btn-circle-num circle-num-even" onclick="openBetModal('2')">2</button>
+            <button class="btn-circle-num circle-num-odd" onclick="openBetModal('3')">3</button>
+            <button class="btn-circle-num circle-num-even" onclick="openBetModal('4')">4</button>
+            <button class="btn-circle-num circle-num-5" onclick="openBetModal('5')">5</button>
+            <button class="btn-circle-num circle-num-even" onclick="openBetModal('6')">6</button>
+            <button class="btn-circle-num circle-num-odd" onclick="openBetModal('7')">7</button>
+            <button class="btn-circle-num circle-num-even" onclick="openBetModal('8')">8</button>
+            <button class="btn-circle-num circle-num-odd" onclick="openBetModal('9')">9</button>
+        </div>
     </div>
 
-    <!-- Game Records History Logs -->
-    <div class="section-title"><i class="fa-solid fa-chart-line me-2"></i>Wingo Game Records</div>
-    <div class="history-card">
-        <table class="table history-table text-center mb-0">
-            <thead>
-                <tr>
-                    <th>Period ID</th>
-                    <th>Number</th>
-                    <th>Color</th>
-                </tr>
-            </thead>
-            <tbody id="gameHistoryList">
-                <!-- Mock Results Generated Dynamically -->
-            </tbody>
-        </table>
+    <!-- Helper Betting panel multiplier chips -->
+    <div class="helper-bets-row">
+        <button class="btn-helper btn-helper-random" onclick="placeRandomNumberBet()">Random</button>
+        <button class="btn-helper active" onclick="setMultiplierChip(1)">X1</button>
+        <button class="btn-helper" onclick="setMultiplierChip(5)">X5</button>
+        <button class="btn-helper" onclick="setMultiplierChip(10)">X10</button>
+        <button class="btn-helper" onclick="setMultiplierChip(20)">X20</button>
+        <button class="btn-helper" onclick="setMultiplierChip(50)">X50</button>
+        <button class="btn-helper" onclick="setMultiplierChip(100)">X100</button>
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Big Small Betting Row -->
+    <div class="big-small-row">
+        <button class="btn-big-small btn-big-orange" onclick="openBetModal('big')">Big</button>
+        <button class="btn-big-small btn-small-blue" onclick="openBetModal('small')">Small</button>
+    </div>
+
+    <!-- Statistics history panels -->
+    <div class="history-tabs-container d-flex flex-column">
+        <div class="history-nav-tabs">
+            <button class="history-tab-link active" id="tab-history" onclick="switchHistoryTab('history')">Game history</button>
+            <button class="history-tab-link" id="tab-chart" onclick="switchHistoryTab('chart')">Chart</button>
+        </div>
+        
+        <div class="table-responsive flex-grow-1">
+            <table class="table history-table text-center mb-0">
+                <thead>
+                    <tr id="historyTableHeader">
+                        <th>Period</th>
+                        <th>Number</th>
+                        <th>Big Small</th>
+                        <th>Color</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <!-- Dynamic Rows Rendered here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Shared bottom Nav Bar -->
     <div class="bottom-nav">
-        <button class="nav-item-btn active"><i class="fa-solid fa-gamepad"></i>Game</button>
-        <button class="nav-item-btn" onclick="window.location.href='recharge.html'"><i class="fa-solid fa-wallet"></i>Wallet</button>
-        <button class="nav-item-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i>Logout</button>
+        <a href="index.html" class="nav-item-btn"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="activity.html" class="nav-item-btn"><i class="fa-solid fa-gift"></i>Activity</a>
+        <a href="promotion.html" class="nav-item-btn"><i class="fa-solid fa-gem"></i>Promotion</a>
+        <a href="recharge.html" class="nav-item-btn"><i class="fa-solid fa-wallet"></i>Wallet</a>
+        <a href="account.html" class="nav-item-btn"><i class="fa-solid fa-user"></i>Account</a>
     </div>
 </div>
 
-<!-- Bet Amount Choice Modal -->
-<div class="modal fade" id="betModal" tabindex="-1" aria-hidden="true">
+<!-- Bet Config Modal -->
+<div class="modal fade" id="betConfigModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Join Wingo - Predict <span class="badge text-uppercase" id="selectedBetName">Red</span></h5>
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold text-dark">Join Wingo - Predict <span class="badge text-uppercase bg-danger" id="modalBetTypeBadge">Red</span></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <label class="form-label text-muted">Select Contract Amount (₹)</label>
-                <div class="chip-group">
-                    <button class="chip-btn active" onclick="setChipAmount(10)">₹10</button>
-                    <button class="chip-btn" onclick="setChipAmount(100)">₹100</button>
-                    <button class="chip-btn" onclick="setChipAmount(1000)">₹1000</button>
-                    <button class="chip-btn" onclick="setChipAmount(5000)">₹5000</button>
+                <label class="form-label text-muted fs-7 fw-bold">Select Chip Amount (₹)</label>
+                <div class="chip-group mb-3">
+                    <button class="chip-btn active" onclick="setModalChipAmount(10)">₹10</button>
+                    <button class="chip-btn" onclick="setModalChipAmount(100)">₹100</button>
+                    <button class="chip-btn" onclick="setModalChipAmount(1000)">₹1000</button>
+                    <button class="chip-btn" onclick="setModalChipAmount(5000)">₹5000</button>
                 </div>
-                <div class="mt-3">
-                    <label class="form-label text-muted">Enter Custom Amount (₹)</label>
-                    <input type="number" class="form-control" id="customBetAmount" value="10" min="10">
+                <div class="mb-3">
+                    <label class="form-label text-muted fs-7 fw-bold">Custom Contract Amount (₹)</label>
+                    <input type="number" class="form-control form-control-lg font-monospace text-success fw-bold" id="modalCustomAmount" value="10" min="10">
                 </div>
-                <div id="betAlert" class="alert alert-danger d-none py-2 text-center mt-3" role="alert"></div>
+                <div class="alert alert-danger d-none py-2 text-center" id="modalAlertBox" role="alert"></div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmBetBtn" style="background: linear-gradient(135deg, #fb4e4e, #d82c2c);">Confirm Bet</button>
+            <div class="modal-footer border-top-0 pt-0">
+                <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger rounded-pill px-4" id="modalConfirmBetBtn" style="background: #f24747;">Confirm Bet</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Bootstrap JS -->
+<!-- Custom Win/Loss Overlay Modal matching user screenshot exactly -->
+<div class="game-result-overlay" id="gameResultOverlay">
+    <div class="text-center position-relative">
+        <div class="result-popup-card" id="resultPopupCard">
+            <div class="result-popup-header" id="popupBadgeContainer">
+                <!-- SVG golden winged rocket badge dynamically drawn here -->
+            </div>
+            
+            <div class="result-popup-title" id="resultPopupTitle">Congratulations</div>
+            
+            <div class="result-popup-sub">
+                Lottery results 
+                <span class="badge-capsule" id="popupResColor">Green</span>
+                <span class="badge-capsule badge-circle" id="popupResNum">3</span>
+                <span class="badge-capsule" id="popupResBigSmall">Small</span>
+            </div>
+            
+            <div class="result-popup-slip">
+                <div class="slip-label" id="popupSlipLbl">Bonus</div>
+                <div class="slip-value text-danger fw-bold font-monospace" id="popupSlipVal">₹882.00</div>
+                <div class="slip-period text-muted" id="popupSlipPeriod">Period: Wingo 30s 202608230001</div>
+            </div>
+            
+            <div class="auto-close-lbl">
+                <i class="fa-solid fa-circle-notch fa-spin me-1"></i> 
+                <span id="autoCloseSeconds">5</span> seconds auto close
+            </div>
+        </div>
+        <button class="close-popup-btn" onclick="closeResultOverlay()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+</div>
+
+<!-- Sound effects dependencies (Web Audio Synthesizer fallback) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- MD5 Hash Dependency (used for deterministic client-side game outcome hashes) -->
+<!-- MD5 Hash Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
 <!-- Firebase API Helper -->
 <script src="firebase-config.js"></script>
 <script>
     const username = localStorage.getItem('wingo_user');
     if (!username) {
-        window.location.href = 'index.html';
+        window.location.href = 'login.html';
     }
 
     let userBalance = 0;
+    let selectedModeSeconds = 30; // Default 30sec
+    let currentPeriodId = '';
+    let soundMuted = false;
     let selectedBet = '';
-    let betAmount = 10;
-    let currentPeriod = '';
-    let placedBets = {}; // Store player bets placed in current period
+    let betBaseAmount = 10;
+    let multiplierMultiplier = 1;
+    let currentPlacedBets = {}; // bets placed in the active period
+    let currentHistoryTab = 'history'; // history or chart
 
-    // Initial Fetch on Boot
-    async function loadUserProfile() {
+    // Audio synthesizer function for game sound feedback (0% reliance on external audio file downloads)
+    function playAudioTone(freq, type, duration) {
+        if (soundMuted) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc.type = type;
+            osc.frequency.value = freq;
+            
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+            
+            osc.start();
+            osc.stop(ctx.currentTime + duration);
+        } catch (e) {
+            console.log("Audio not allowed yet.", e);
+        }
+    }
+
+    function toggleMuteSound() {
+        soundMuted = !soundMuted;
+        const soundIcon = document.querySelector('.fa-volume-high, .fa-volume-xmark');
+        if (soundMuted) {
+            soundIcon.className = 'fa-solid fa-volume-xmark';
+        } else {
+            soundIcon.className = 'fa-solid fa-volume-high';
+            playAudioTone(600, 'sine', 0.1);
+        }
+    }
+
+    // Refresh wallet balance
+    async function refreshBalance() {
         const profile = await firebaseRequest(`users/${username}`);
         if (profile) {
             userBalance = profile.balance ?? 0;
-            document.getElementById('userBalance').innerText = parseFloat(userBalance).toFixed(2);
-            document.getElementById('userCode').innerText = profile.usercode ?? 'WINGO';
+            document.getElementById('userBalanceVal').innerText = parseFloat(userBalance).toFixed(2);
         }
     }
 
-    // Hash-based Result Generator (Stateless outcome engine)
-    function getPeriodResult(period) {
-        const hash = md5(period + "WingoGameSecretKey");
-        const num = parseInt(hash.substring(0, 2), 16) % 10;
-        
-        let color = '';
-        let badgeClass = '';
-        
-        if (num === 0) {
-            color = 'redviolet';
-            badgeClass = 'circle-redviolet';
-        } else if (num === 5) {
-            color = 'greenviolet';
-            badgeClass = 'circle-greenviolet';
-        } else if (num % 2 === 0) {
-            color = 'red';
-            badgeClass = 'circle-red';
-        } else {
-            color = 'green';
-            badgeClass = 'circle-green';
-        }
-        
-        return {
-            period: period,
-            number: num,
-            color: color,
-            badgeClass: badgeClass
-        };
-    }
-
-    // Populate Historical Results logs
-    function renderGameHistory(minutesMidnight) {
-        const listEl = document.getElementById('gameHistoryList');
-        listEl.innerHTML = '';
-        
-        // Generate results for previous 15 periods
-        for (let i = 1; i <= 15; i++) {
-            const p_num = Math.floor(minutesMidnight / 3) - i + 1;
-            const ymd = new Date().toISOString().slice(0,10).replace(/-/g,"");
-            const period = ymd + String(p_num).padStart(3, '0');
-            
-            const res = getPeriodResult(period);
-            
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${res.period}</td>
-                <td><span class="circle-badge ${res.badgeClass}">${res.number}</span></td>
-                <td class="text-capitalize font-weight-bold" style="color: ${res.color === 'red' ? '#dc3545' : (res.color === 'green' ? '#28a745' : '#6f42c1')}">${res.color}</td>
-            `;
-            listEl.appendChild(tr);
-        }
-    }
-
-    // Sync Game Countdown Loop
-    function runTimerSync() {
-        setInterval(() => {
-            const now = new Date();
-            const minutesMidnight = now.getHours() * 60 + now.getMinutes();
-            const seconds = now.getSeconds();
-            
-            // 3-minute game interval: calculate cycle details
-            const totalCycleSeconds = 180;
-            const currentCycleSeconds = (now.getMinutes() % 3) * 60 + seconds;
-            const remainingSeconds = totalCycleSeconds - currentCycleSeconds;
-            
-            // Calculate Period ID
-            const currentPeriodNum = Math.floor(minutesMidnight / 3) + 1;
-            const ymd = now.toISOString().slice(0,10).replace(/-/g,"");
-            const activePeriod = ymd + String(currentPeriodNum).padStart(3, '0');
-            
-            if (currentPeriod !== activePeriod) {
-                // If period changed, resolve the bets placed in the just finished period!
-                if (currentPeriod !== '') {
-                    resolveBetsPlaced(currentPeriod);
-                }
-                currentPeriod = activePeriod;
-                document.getElementById('gamePeriod').innerText = currentPeriod;
-                renderGameHistory(minutesMidnight);
-                loadUserProfile(); // refresh user wallet balance
-            }
-            
-            // Format timer remaining display
-            const minLeft = Math.floor(remainingSeconds / 60);
-            const secLeft = remainingSeconds % 60;
-            document.getElementById('gameTimer').innerText = 
-                `${String(minLeft).padStart(2, '0')}:${String(secLeft).padStart(2, '0')}`;
-        }, 1000);
-    }
-
-    // Resolve Player Bets dynamically at period end
-    async function resolveBetsPlaced(period) {
-        const bet = placedBets[period];
-        if (!bet) return;
-        
-        const outcome = getPeriodResult(period);
-        let multiplier = 0;
-        
-        if (bet.type === 'red' || bet.type === 'green') {
-            if (outcome.color === bet.type || outcome.color.includes(bet.type)) {
-                multiplier = outcome.color.includes('violet') ? 1.5 : 2; // if violet lands, 1.5x payout, otherwise 2x
-            }
-        } else if (bet.type === 'violet') {
-            if (outcome.color.includes('violet')) {
-                multiplier = 4.5;
-            }
-        } else {
-            // number bet
-            if (parseInt(bet.type) === outcome.number) {
-                multiplier = 9; // 9x payout for predicting exact winning number
-            }
-        }
-        
-        if (multiplier > 0) {
-            const winnings = bet.amount * multiplier;
-            userBalance += winnings;
-            
-            // Update balance in Firebase
-            await firebaseRequest(`users/${username}/balance`, 'PUT', userBalance);
-            alert(`Congratulations! You won ₹${winnings.toFixed(2)} on Period ${period}!`);
-        } else {
-            alert(`Oops! You lost ₹${bet.amount.toFixed(2)} on Period ${period}. Better luck next time!`);
-        }
-        
-        // Clear bet
-        delete placedBets[period];
-        loadUserProfile();
-    }
-
-    // Manage Bet Modals
-    const betModal = new bootstrap.Modal(document.getElementById('betModal'));
-    
+    // Modal Helper
+    const betConfigModal = new bootstrap.Modal(document.getElementById('betConfigModal'));
     function openBetModal(selection) {
         selectedBet = selection;
-        const nameEl = document.getElementById('selectedBetName');
-        nameEl.innerText = selection;
-        nameEl.className = 'badge text-uppercase ';
+        const badge = document.getElementById('modalBetTypeBadge');
+        badge.innerText = selection;
+        badge.className = 'badge text-uppercase ';
         
-        if (selection === 'red') nameEl.classList.add('bg-danger');
-        else if (selection === 'green') nameEl.classList.add('bg-success');
-        else if (selection === 'violet') nameEl.classList.add('bg-purple');
-        else nameEl.classList.add('bg-secondary');
+        if (selection === 'red') badge.classList.add('bg-danger');
+        else if (selection === 'green') badge.classList.add('bg-success');
+        else if (selection === 'violet') badge.classList.add('bg-purple');
+        else if (selection === 'big') badge.classList.add('bg-warning', 'text-dark');
+        else if (selection === 'small') badge.classList.add('bg-primary');
+        else badge.classList.add('bg-secondary');
         
-        document.getElementById('betAlert').classList.add('d-none');
-        betModal.show();
+        document.getElementById('modalAlertBox').classList.add('d-none');
+        document.getElementById('modalCustomAmount').value = betBaseAmount * multiplierMultiplier;
+        betConfigModal.show();
     }
 
-    function setChipAmount(amt) {
-        betAmount = amt;
-        document.getElementById('customBetAmount').value = amt;
+    function setModalChipAmount(amt) {
+        betBaseAmount = amt;
+        document.getElementById('modalCustomAmount').value = amt * multiplierMultiplier;
         
-        // Toggle active styling
-        const buttons = document.querySelectorAll('.chip-btn');
-        buttons.forEach(btn => {
-            if (btn.innerText.includes(amt)) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
+        const chips = document.querySelectorAll('.chip-btn');
+        chips.forEach(btn => {
+            if (btn.innerText.includes(amt)) btn.classList.add('active');
+            else btn.classList.remove('active');
         });
     }
 
-    // Listen to custom bet change
-    document.getElementById('customBetAmount').addEventListener('input', (e) => {
-        betAmount = parseInt(e.target.value) || 0;
-    });
-
-    // Handle Confirm Bet Submission
-    document.getElementById('confirmBetBtn').addEventListener('click', async () => {
-        const amount = parseInt(document.getElementById('customBetAmount').value);
-        const alertEl = document.getElementById('betAlert');
-        alertEl.classList.add('d-none');
+    function setMultiplierChip(mult) {
+        multiplierMultiplier = mult;
         
-        if (amount < 10) {
+        const helpers = document.querySelectorAll('.btn-helper:not(.btn-helper-random)');
+        helpers.forEach(btn => {
+            if (btn.innerText.includes('X' + mult)) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+        playAudioTone(400, 'sine', 0.05);
+    }
+
+    function placeRandomNumberBet() {
+        const randomNum = Math.floor(Math.random() * 10);
+        openBetModal(String(randomNum));
+    }
+
+    // Modal Bet Confirmation
+    document.getElementById('modalConfirmBetBtn').addEventListener('click', async () => {
+        const amt = parseInt(document.getElementById('modalCustomAmount').value) || 0;
+        const alertEl = document.getElementById('modalAlertBox');
+        
+        if (amt < 10) {
             alertEl.innerText = "Minimum bet amount is ₹10.";
             alertEl.classList.remove('d-none');
             return;
         }
         
-        if (amount > userBalance) {
-            alertEl.innerText = "Insufficient balance! Please recharge.";
+        if (amt > userBalance) {
+            alertEl.innerText = "Insufficient balance! Please deposit.";
             alertEl.classList.remove('d-none');
             return;
         }
         
-        // Deduct balance locally and in Firebase
-        userBalance -= amount;
+        userBalance -= amt;
         const res = await firebaseRequest(`users/${username}/balance`, 'PUT', userBalance);
         
         if (res !== null) {
-            // Save bet record under current period local memory (stateless checks)
-            placedBets[currentPeriod] = {
+            // Save bet in local memory only (serverless specs - no Firebase logging)
+            currentPlacedBets[currentPeriodId] = {
                 type: selectedBet,
-                amount: amount
+                amount: amt
             };
             
-            // Bet details are kept locally in memory, no Firebase save.
-            
-            document.getElementById('userBalance').innerText = parseFloat(userBalance).toFixed(2);
-            betModal.hide();
+            document.getElementById('userBalanceVal').innerText = parseFloat(userBalance).toFixed(2);
+            betConfigModal.hide();
+            playAudioTone(800, 'triangle', 0.15);
             alert("Bet Placed Successfully!");
         } else {
-            alertEl.innerText = "Transaction failed. Please try again.";
+            alertEl.innerText = "Connection failed. Try again.";
             alertEl.classList.remove('d-none');
         }
     });
 
-    // Handle logout
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('wingo_user');
-        window.location.href = 'index.html';
-    });
+    // Hash-based Deterministic Game Outcome Engine (Consistent for all players)
+    function calculateGameOutcome(period, modeSec) {
+        const hash = md5(period + "OKWINWingoSecretPhrase" + modeSec);
+        const numberResult = parseInt(hash.substring(0, 2), 16) % 10;
+        
+        let color = '';
+        let bigSmall = numberResult >= 5 ? 'Big' : 'Small';
+        let ballsClasses = [];
+        
+        if (numberResult === 0) {
+            color = 'redviolet';
+            ballsClasses = ['ball-red', 'ball-violet'];
+        } else if (numberResult === 5) {
+            color = 'greenviolet';
+            ballsClasses = ['ball-green', 'ball-violet'];
+        } else if (numberResult % 2 === 0) {
+            color = 'red';
+            ballsClasses = ['ball-red'];
+        } else {
+            color = 'green';
+            ballsClasses = ['ball-green'];
+        }
+        
+        return {
+            period: period,
+            number: numberResult,
+            bigSmall: bigSmall,
+            color: color,
+            ballsClasses: ballsClasses
+        };
+    }
+
+    // Resolve player bets on period finish
+    async function checkPeriodResolution(period) {
+        const bet = currentPlacedBets[period];
+        if (!bet) return;
+        
+        // Check if admin has set a manual rigging preset for this period
+        const preset = await firebaseRequest(`presets/${period}`);
+        let outcome = calculateGameOutcome(period, selectedModeSeconds);
+        
+        if (preset && preset.value) {
+            const val = preset.value;
+            let finalNum = outcome.number;
+            let finalColor = outcome.color;
+            let finalClasses = outcome.ballsClasses;
+            
+            if (val === 'red') {
+                finalNum = 2;
+                finalColor = 'red';
+                finalClasses = ['ball-red'];
+            } else if (val === 'green') {
+                finalNum = 1;
+                finalColor = 'green';
+                finalClasses = ['ball-green'];
+            } else if (val === 'violet') {
+                finalNum = 5;
+                finalColor = 'greenviolet';
+                finalClasses = ['ball-green', 'ball-violet'];
+            } else if (!isNaN(val)) {
+                finalNum = parseInt(val);
+                if (finalNum === 0) {
+                    finalColor = 'redviolet';
+                    finalClasses = ['ball-red', 'ball-violet'];
+                } else if (finalNum === 5) {
+                    finalColor = 'greenviolet';
+                    finalClasses = ['ball-green', 'ball-violet'];
+                } else if (finalNum % 2 === 0) {
+                    finalColor = 'red';
+                    finalClasses = ['ball-red'];
+                } else {
+                    finalColor = 'green';
+                    finalClasses = ['ball-green'];
+                }
+            }
+            
+            outcome = {
+                period: period,
+                number: finalNum,
+                bigSmall: finalNum >= 5 ? 'Big' : 'Small',
+                color: finalColor,
+                ballsClasses: finalClasses
+            };
+        }
+        
+        let multiplier = 0;
+        
+        if (bet.type === 'red' || bet.type === 'green') {
+            if (outcome.color === bet.type || outcome.color.includes(bet.type)) {
+                multiplier = outcome.color.includes('violet') ? 1.5 : 2;
+            }
+        } else if (bet.type === 'violet') {
+            if (outcome.color.includes('violet')) multiplier = 4.5;
+        } else if (bet.type === 'big' || bet.type === 'small') {
+            if (outcome.bigSmall.toLowerCase() === bet.type) multiplier = 2;
+        } else {
+            // number bet
+            if (parseInt(bet.type) === outcome.number) multiplier = 9;
+        }
+        
+        if (multiplier > 0) {
+            const winnings = bet.amount * multiplier;
+            userBalance += winnings;
+            await firebaseRequest(`users/${username}/balance`, 'PUT', userBalance);
+            showResultOverlay(true, winnings, period, outcome);
+        } else {
+            showResultOverlay(false, 0, period, outcome);
+        }
+        
+        delete currentPlacedBets[period];
+        refreshBalance();
+    }
+
+    let overlayTimer = null;
+    function showResultOverlay(isWin, winnings, period, outcome) {
+        const overlay = document.getElementById('gameResultOverlay');
+        const card = document.getElementById('resultPopupCard');
+        const badgeContainer = document.getElementById('popupBadgeContainer');
+        const title = document.getElementById('resultPopupTitle');
+        const resColor = document.getElementById('popupResColor');
+        const resNum = document.getElementById('popupResNum');
+        const resBigSmall = document.getElementById('popupResBigSmall');
+        const slipLbl = document.getElementById('popupSlipLbl');
+        const slipVal = document.getElementById('popupSlipVal');
+        const slipPeriod = document.getElementById('popupSlipPeriod');
+        const countdownEl = document.getElementById('autoCloseSeconds');
+        
+        // Populate results pills
+        let colorName = outcome.color.replace('violet', '').toUpperCase();
+        if (colorName === 'RED') {
+            resColor.innerText = 'Red';
+            resColor.className = 'badge-capsule badge-red';
+        } else if (colorName === 'GREEN') {
+            resColor.innerText = 'Green';
+            resColor.className = 'badge-capsule badge-green';
+        } else {
+            resColor.innerText = 'Violet';
+            resColor.className = 'badge-capsule badge-violet';
+        }
+        
+        resNum.innerText = outcome.number;
+        if (outcome.color.includes('red') && outcome.color.includes('violet')) {
+            resNum.className = 'badge-capsule badge-circle violet-circle';
+        } else if (outcome.color.includes('green') && outcome.color.includes('violet')) {
+            resNum.className = 'badge-capsule badge-circle violet-circle';
+        } else if (outcome.color.includes('red')) {
+            resNum.className = 'badge-capsule badge-circle red-circle';
+        } else {
+            resNum.className = 'badge-capsule badge-circle green-circle';
+        }
+        
+        resBigSmall.innerText = outcome.bigSmall;
+        resBigSmall.className = `badge-capsule ${outcome.bigSmall === 'Big' ? 'bg-warning text-dark' : 'bg-primary'}`;
+        
+        slipPeriod.innerText = `Period: Win ${selectedModeSeconds === 30 ? '30s' : (selectedModeSeconds/60) + ' Min'} ${period}`;
+        
+        if (isWin) {
+            card.classList.remove('loss-theme');
+            title.innerText = 'Congratulations';
+            slipLbl.innerText = 'Bonus';
+            slipLbl.classList.remove('loss-color');
+            slipVal.innerText = `₹${winnings.toFixed(2)}`;
+            slipVal.classList.remove('loss-val');
+            
+            // Gold Rocket wings badge SVG
+            badgeContainer.innerHTML = `
+                <svg viewBox="0 0 100 100" width="90" height="90">
+                    <path d="M10 50 C25 40 38 45 42 50 C38 55 25 60 10 50 Z" fill="#fff" opacity="0.6"/>
+                    <path d="M90 50 C75 40 62 45 58 50 C62 55 75 60 90 50 Z" fill="#fff" opacity="0.6"/>
+                    <circle cx="50" cy="50" r="32" fill="#ffd700" stroke="#ffffff" stroke-width="3"/>
+                    <circle cx="50" cy="50" r="26" fill="#ff9800"/>
+                    <path d="M50 32 L58 45 L54 45 L54 58 L46 58 L46 45 L42 45 Z" fill="#ffffff"/>
+                    <path d="M50 58 L54 64 L46 64 Z" fill="#ff5722"/>
+                </svg>
+            `;
+            playAudioTone(1200, 'sine', 0.25);
+        } else {
+            card.classList.add('loss-theme');
+            title.innerText = 'Sorry';
+            slipLbl.innerText = 'Better luck next time';
+            slipLbl.classList.add('loss-color');
+            slipVal.innerText = '₹0.00';
+            slipVal.classList.add('loss-val');
+            
+            // Silver sad face/downward rocket SVG
+            badgeContainer.innerHTML = `
+                <svg viewBox="0 0 100 100" width="90" height="90">
+                    <circle cx="50" cy="50" r="32" fill="#90a4ae" stroke="#ffffff" stroke-width="3"/>
+                    <circle cx="50" cy="50" r="26" fill="#455a64"/>
+                    <circle cx="42" cy="45" r="3" fill="#ffffff"/>
+                    <circle cx="58" cy="45" r="3" fill="#ffffff"/>
+                    <path d="M40 60 Q50 50 60 60" stroke="#ffffff" stroke-width="3" fill="transparent"/>
+                </svg>
+            `;
+            playAudioTone(250, 'sawtooth', 0.2);
+        }
+        
+        overlay.style.display = 'flex';
+        
+        let remainingSeconds = 5;
+        countdownEl.innerText = remainingSeconds;
+        
+        if (overlayTimer) clearInterval(overlayTimer);
+        overlayTimer = setInterval(() => {
+            remainingSeconds--;
+            countdownEl.innerText = remainingSeconds;
+            if (remainingSeconds <= 0) {
+                clearInterval(overlayTimer);
+                closeResultOverlay();
+            }
+        }, 1000);
+    }
+    
+    function closeResultOverlay() {
+        if (overlayTimer) clearInterval(overlayTimer);
+        document.getElementById('gameResultOverlay').style.display = 'none';
+    }
+
+    // Toggle different timer cycles
+    function changeGameMode(sec) {
+        selectedModeSeconds = sec;
+        
+        // Active mode styling
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.classList.remove('active');
+            const icon = btn.querySelector('i');
+            icon.style.color = '#adb5bd';
+        });
+        
+        const activeBtn = document.getElementById(`mode-${sec}s`);
+        activeBtn.classList.add('active');
+        activeBtn.querySelector('i').style.color = '#ff5252';
+        
+        document.getElementById('selectedModeTitle').innerText = `WinGo ${sec === 30 ? '30s' : (sec/60) + ' Min'}`;
+        currentPeriodId = ''; // force update
+        playAudioTone(500, 'sine', 0.1);
+    }
+
+    // Render historical lists
+    function renderHistoryList(minutesMidnight, seconds) {
+        const tbody = document.getElementById('historyTableBody');
+        tbody.innerHTML = '';
+        
+        const currentCycleNumber = Math.floor((minutesMidnight * 60 + seconds) / selectedModeSeconds);
+        const ymd = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+        
+        // Render 15 previous records
+        for (let i = 1; i <= 15; i++) {
+            const prevCycle = currentCycleNumber - i;
+            const period = ymd + String(prevCycle).padStart(4, '0');
+            const outcome = calculateGameOutcome(period, selectedModeSeconds);
+            
+            const tr = document.createElement('tr');
+            
+            if (currentHistoryTab === 'history') {
+                // Game History Row
+                let ballsHtml = '';
+                outcome.ballsClasses.forEach(bc => {
+                    ballsHtml += `<span class="dot-badge ${bc === 'ball-red' ? 'bg-danger' : (bc === 'ball-green' ? 'bg-success' : 'bg-purple')}"></span>`;
+                });
+                
+                tr.innerHTML = `
+                    <td class="font-monospace">${period}</td>
+                    <td>
+                        <span class="circle-badge ${outcome.color === 'red' ? 'bg-danger' : (outcome.color === 'green' ? 'bg-success' : 'bg-secondary')}" style="background: ${outcome.color === 'redviolet' ? 'linear-gradient(135deg, #6f42c1, #dc3545)' : (outcome.color === 'greenviolet' ? 'linear-gradient(135deg, #6f42c1, #28a745)' : '')}">
+                            ${outcome.number}
+                        </span>
+                    </td>
+                    <td class="fw-bold ${outcome.bigSmall === 'Big' ? 'text-warning' : 'text-primary'}">${outcome.bigSmall}</td>
+                    <td>${ballsHtml}</td>
+                `;
+            } else {
+                // Charts tab representation
+                let circles = '';
+                for (let n = 0; n <= 9; n++) {
+                    if (n === outcome.number) {
+                        circles += `<td style="padding: 2px;"><span class="circle-badge bg-danger" style="width:18px; height:18px; font-size:0.65rem;">${n}</span></td>`;
+                    } else {
+                        circles += `<td class="text-muted opacity-25" style="font-size:0.65rem; padding: 2px;">${n}</td>`;
+                    }
+                }
+                tr.innerHTML = `
+                    <td class="font-monospace text-start" style="font-size: 0.72rem;">${period.slice(-4)}</td>
+                    ${circles}
+                `;
+            }
+            
+            tbody.appendChild(tr);
+        }
+        
+        // Render 5 recent outcomes balls in status card
+        const ballsRow = document.getElementById('recentBallsRow');
+        ballsRow.innerHTML = '';
+        for (let i = 1; i <= 5; i++) {
+            const p = ymd + String(currentCycleNumber - i).padStart(4, '0');
+            const o = calculateGameOutcome(p, selectedModeSeconds);
+            const span = document.createElement('span');
+            span.className = `recent-ball ${o.color === 'red' ? 'ball-red' : (o.color === 'green' ? 'ball-green' : 'ball-violet')}`;
+            span.innerText = o.number;
+            ballsRow.appendChild(span);
+        }
+    }
+
+    function switchHistoryTab(tab) {
+        currentHistoryTab = tab;
+        document.getElementById('tab-history').className = `history-tab-link ${tab === 'history' ? 'active' : ''}`;
+        document.getElementById('tab-chart').className = `history-tab-link ${tab === 'chart' ? 'active' : ''}`;
+        
+        const header = document.getElementById('historyTableHeader');
+        if (tab === 'chart') {
+            header.innerHTML = `<th class="text-start">Period</th>` + [...Array(10).keys()].map(x => `<th>${x}</th>`).join('');
+        } else {
+            header.innerHTML = `<th>Period</th><th>Number</th><th>Big Small</th><th>Color</th>`;
+        }
+        
+        playAudioTone(450, 'sine', 0.05);
+        const now = new Date();
+        const minMidnight = now.getHours() * 60 + now.getMinutes();
+        renderHistoryList(minMidnight, now.getSeconds());
+    }
+
+    // Sync Active countdown timer
+    function startTimerLoop() {
+        setInterval(() => {
+            const now = new Date();
+            const secondsMidnight = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+            const currentPeriodCycle = Math.floor(secondsMidnight / selectedModeSeconds);
+            const remaining = selectedModeSeconds - (secondsMidnight % selectedModeSeconds);
+            
+            const ymd = now.toISOString().slice(0, 10).replace(/-/g, "");
+            const activePeriod = ymd + String(currentPeriodCycle + 1).padStart(4, '0');
+            
+            if (currentPeriodId !== activePeriod) {
+                if (currentPeriodId !== '') {
+                    checkPeriodResolution(currentPeriodId);
+                }
+                currentPeriodId = activePeriod;
+                document.getElementById('activePeriodVal').innerText = currentPeriodId;
+                const minMid = now.getHours() * 60 + now.getMinutes();
+                renderHistoryList(minMid, now.getSeconds());
+                refreshBalance();
+            }
+            
+            // Format timer remaining display
+            const min = Math.floor(remaining / 60);
+            const sec = remaining % 60;
+            document.getElementById('countdownVal').innerText = 
+                `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+                
+            // Last 3 seconds heartbeat warning ticks
+            if (remaining <= 3 && remaining > 0) {
+                playAudioTone(600, 'sine', 0.05);
+            }
+        }, 1000);
+    }
 
     // Run on startup
-    loadUserProfile();
-    runTimerSync();
+    refreshBalance();
+    startTimerLoop();
 </script>
 </body>
 </html>

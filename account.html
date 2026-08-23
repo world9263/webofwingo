@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OK.Win - Account Profile</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f9fc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+            padding-bottom: 75px;
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 420px) {
+            .app-container {
+                min-height: 95vh;
+                border-radius: 20px;
+                overflow: hidden;
+            }
+        }
+        
+        .header-profile-section {
+            background: linear-gradient(135deg, #ff6c6c, #f24747);
+            color: white;
+            padding: 30px 20px 50px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+        .back-icon {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: white;
+            font-size: 1.3rem;
+            text-decoration: none;
+        }
+        .avatar-box {
+            position: relative;
+            cursor: pointer;
+        }
+        .profile-avatar-img {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.4);
+            object-fit: cover;
+        }
+        .edit-avatar-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background-color: #ffffff;
+            color: #f24747;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .profile-name { font-weight: 700; font-size: 1.15rem; }
+        .profile-uid { font-size: 0.76rem; opacity: 0.9; }
+
+        /* Profile details card overlaps banner */
+        .details-card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 15px;
+            margin: -25px 15px 15px 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            z-index: 10;
+            position: relative;
+        }
+        
+        .list-menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 5px;
+            border-bottom: 1px solid #f1f3f6;
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .list-menu-item:last-child { border-bottom: none; }
+        .list-menu-item i.menu-icon {
+            color: #ff6c6c;
+            font-size: 1.1rem;
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        .list-menu-item i.chevron-icon {
+            color: #ced4da;
+            font-size: 0.8rem;
+        }
+
+        /* Avatar Selection Grid in modal */
+        .avatar-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 10px 0;
+        }
+        .avatar-option-btn {
+            border: 2px solid transparent;
+            background: transparent;
+            padding: 2px;
+            border-radius: 50%;
+        }
+        .avatar-option-btn.selected {
+            border-color: #f24747;
+        }
+        .avatar-option-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Shared Footer Nav */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #ffffff;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.04);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+        .nav-item-btn {
+            color: #7f8c9d;
+            text-decoration: none;
+            font-size: 0.72rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+        }
+        .nav-item-btn.active { color: #f24747; }
+        .nav-item-btn i { font-size: 1.25rem; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Profile header banner -->
+    <div class="header-profile-section">
+        <a href="index.html" class="back-icon"><i class="fa-solid fa-chevron-left"></i></a>
+        <div class="avatar-box" onclick="openAvatarModal()">
+            <img class="profile-avatar-img" id="userAvatarImg" src="https://picsum.photos/id/64/60/60" alt="Avatar">
+            <span class="edit-avatar-badge"><i class="fa-solid fa-camera"></i></span>
+        </div>
+        <div class="profile-info">
+            <span class="profile-name" id="userProfileNameVal">User</span>
+            <span class="profile-uid">UID ID: <span id="userUidVal">WINGO00000</span></span>
+        </div>
+    </div>
+    
+    <!-- Settings menu listing -->
+    <div class="details-card">
+        <a href="#" class="list-menu-item" onclick="changeNicknamePrompt()">
+            <span><i class="fa-solid fa-user-pen menu-icon"></i> Modify Nickname</span>
+            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+        </a>
+        <a href="wallet.html" class="list-menu-item">
+            <span><i class="fa-solid fa-wallet menu-icon"></i> Wallet Payout Logs</span>
+            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+        </a>
+        <a href="about.html" class="list-menu-item">
+            <span><i class="fa-solid fa-shield-halved menu-icon"></i> Game Rules / Regulations</span>
+            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+        </a>
+        <a href="customer-service.html" class="list-menu-item">
+            <span><i class="fa-solid fa-headset menu-icon"></i> Help & Feedback Support</span>
+            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+        </a>
+        <a href="#" class="list-menu-item text-danger" id="logoutActionBtn">
+            <span><i class="fa-solid fa-power-off menu-icon text-danger"></i> Sign Out Account</span>
+            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+        </a>
+    </div>
+
+    <!-- Compliants form section -->
+    <div class="mx-3 mb-4">
+        <h5 class="fw-bold mb-2 text-dark"><i class="fa-solid fa-pen-nib text-danger me-1"></i> Log Complaint / Query</h5>
+        <div class="card p-3 border-0 shadow-sm" style="border-radius: 12px;">
+            <div class="mb-3">
+                <textarea class="form-control" id="complaintText" rows="3" placeholder="Enter details here..."></textarea>
+            </div>
+            <button class="btn btn-danger w-100" style="border-radius: 20px;" onclick="submitComplaint()">Submit Support Ticket</button>
+        </div>
+    </div>
+    
+    <!-- Shared Footer Nav -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item-btn"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="activity.html" class="nav-item-btn"><i class="fa-solid fa-gift"></i>Activity</a>
+        <a href="promotion.html" class="nav-item-btn"><i class="fa-solid fa-gem"></i>Promotion</a>
+        <a href="recharge.html" class="nav-item-btn"><i class="fa-solid fa-wallet"></i>Wallet</a>
+        <a href="account.html" class="nav-item-btn active"><i class="fa-solid fa-user"></i>Account</a>
+    </div>
+</div>
+
+<!-- Avatar Selector Modal -->
+<div class="modal fade" id="avatarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold text-dark">Select User Profile Avatar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="avatar-selection-grid" id="avatarGridContainer">
+                    <!-- Dynamic avatar choices -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase API Helper -->
+<script src="firebase-config.js"></script>
+<script>
+    const username = localStorage.getItem('wingo_user');
+    if (!username) {
+        window.location.href = 'login.html';
+    }
+
+    const avatarModal = new bootstrap.Modal(document.getElementById('avatarModal'));
+
+    // Prepopulate avatar list choices (using picsum ids to make it look professional)
+    const avatarIds = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65];
+
+    async function loadAccountDetails() {
+        const profile = await firebaseRequest(`users/${username}`);
+        if (profile) {
+            document.getElementById('userProfileNameVal').innerText = profile.nickname ?? username;
+            document.getElementById('userUidVal').innerText = profile.usercode ?? 'WINGO';
+            
+            const avatarUrl = profile.avatar ?? `https://picsum.photos/id/64/60/60`;
+            document.getElementById('userAvatarImg').src = avatarUrl;
+        }
+    }
+
+    // Change nickname prompt
+    async function changeNicknamePrompt() {
+        const newNick = prompt("Enter new Nickname / Display Name:");
+        if (!newNick) return;
+        
+        const res = await firebaseRequest(`users/${username}/nickname`, 'PUT', newNick.trim());
+        if (res !== null) {
+            document.getElementById('userProfileNameVal').innerText = newNick;
+            alert("Nickname updated successfully!");
+        } else {
+            alert("Nickname modification failed.");
+        }
+    }
+
+    // Handle avatar selections modal popup
+    function openAvatarModal() {
+        const container = document.getElementById('avatarGridContainer');
+        container.innerHTML = '';
+        
+        avatarIds.forEach(id => {
+            const url = `https://picsum.photos/id/${id}/60/60`;
+            const btn = document.createElement('button');
+            btn.className = 'avatar-option-btn';
+            btn.innerHTML = `<img class="avatar-option-img" src="${url}" alt="Avatar">`;
+            
+            btn.addEventListener('click', async () => {
+                const res = await firebaseRequest(`users/${username}/avatar`, 'PUT', url);
+                if (res !== null) {
+                    document.getElementById('userAvatarImg').src = url;
+                    avatarModal.hide();
+                    alert("Profile avatar updated successfully!");
+                } else {
+                    alert("Failed to update avatar.");
+                }
+            });
+            container.appendChild(btn);
+        });
+        
+        avatarModal.show();
+    }
+
+    // Submit complaint queries tickets
+    async function submitComplaint() {
+        const text = document.getElementById('complaintText').value.trim();
+        if (!text) {
+            alert("Please enter complaint details.");
+            return;
+        }
+        
+        const complaintId = 'CMP' + Math.floor(100000 + Math.random() * 900000);
+        const data = {
+            id: complaintId,
+            username: username,
+            text: text,
+            status: "pending",
+            time: new Date().toLocaleString()
+        };
+        
+        const res = await firebaseRequest(`complaints/${complaintId}`, 'PUT', data);
+        if (res) {
+            alert("Complaint ticket submitted! Complaint Reference ID: " + complaintId);
+            document.getElementById('complaintText').value = '';
+        } else {
+            alert("Failed to submit support ticket.");
+        }
+    }
+
+    // Sign out handler
+    document.getElementById('logoutActionBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (confirm("Are you sure you want to log out?")) {
+            localStorage.removeItem('wingo_user');
+            window.location.href = 'login.html';
+        }
+    });
+
+    loadAccountDetails();
+</script>
+</body>
+</html>
