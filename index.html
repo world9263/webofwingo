@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OK.Win - Login / Register</title>
+    <title>OK.Win - Home Lobby</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -21,556 +21,509 @@
         .app-container {
             width: 100%;
             max-width: 420px;
-            background: #f7f9fc;
+            background: #f8f9fa;
             min-height: 100vh;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+            padding-bottom: 75px;
             display: flex;
             flex-direction: column;
-            position: relative;
         }
         @media (min-width: 420px) {
             .app-container {
-                min-height: 90vh;
+                min-height: 95vh;
                 border-radius: 20px;
                 overflow: hidden;
             }
         }
         
-        /* Banner Gradient matches Wingo exactly */
-        .header-banner {
-            background: linear-gradient(135deg, #ff6c6c, #f24747);
-            color: white;
-            padding: 20px 16px 45px 16px;
-            position: relative;
-        }
-        .top-action-bar {
+        /* OK.Win Header */
+        .app-header {
+            background-color: white;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
-        .back-icon {
-            font-size: 1.4rem;
-            color: white;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .logo-img {
-            height: 32px;
-        }
-        .lang-selector {
-            font-size: 0.9rem;
-            font-weight: 600;
+        .header-logo {
+            font-weight: 800;
+            color: #f24747;
+            font-size: 1.3rem;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
-        .flag-icon {
-            width: 22px;
-            height: 15px;
-            border-radius: 2px;
+        .header-logo i {
+            font-size: 1.4rem;
+        }
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .header-actions i {
+            font-size: 1.3rem;
+            color: #7d889d;
+            cursor: pointer;
+            position: relative;
+        }
+        .red-dot::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 6px;
+            height: 6px;
+            background-color: #f24747;
+            border-radius: 50%;
+        }
+
+        /* Banner Slider Carousel */
+        .banner-carousel {
+            margin: 10px 12px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .carousel-item img {
+            width: 100%;
+            height: 130px;
             object-fit: cover;
         }
-        .banner-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .banner-subtitle {
-            font-size: 0.8rem;
-            opacity: 0.85;
-            line-height: 1.4;
-        }
-        
-        /* Form content container overlaps slightly */
-        .form-card {
-            background-color: #f7f9fc;
-            border-top-left-radius: 25px;
-            border-top-right-radius: 25px;
-            margin-top: -20px;
-            padding: 24px 20px;
-            flex-grow: 1;
-            z-index: 10;
-        }
-        
-        /* Custom tabs design */
-        .nav-tabs {
-            border-bottom: none;
-            justify-content: center;
-            margin-bottom: 25px;
+
+        /* Announcement Notice Bar */
+        .notice-bar {
             background-color: white;
-            border-radius: 12px;
-            padding: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            border-radius: 30px;
+            margin: 0 12px 12px 12px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
-        .nav-item {
-            flex: 1;
+        .notice-bar i {
+            color: #f24747;
+            font-size: 1.05rem;
         }
-        .nav-link {
-            width: 100%;
-            border: none !important;
-            color: #7f8c9d;
-            font-weight: 600;
-            font-size: 0.95rem;
-            padding: 10px 0;
-            text-align: center;
-            border-radius: 10px !important;
+        .notice-marquee {
+            flex-grow: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 0.76rem;
+            color: #495057;
+        }
+        .notice-detail-btn {
+            background-color: #ff5252;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            box-shadow: 0 2px 6px rgba(255, 82, 82, 0.2);
+        }
+
+        /* Main Grid: Sidebar + Games Content */
+        .lobby-grid {
+            display: flex;
+            flex-grow: 1;
+            padding: 0 12px;
+            gap: 12px;
+        }
+        
+        /* Left Sidebar Categories */
+        .lobby-sidebar {
+            width: 85px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sidebar-btn {
+            background-color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
+            color: #7f8c9d;
+            font-size: 0.72rem;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
             transition: all 0.2s ease;
         }
-        .nav-link i {
-            font-size: 1.2rem;
+        .sidebar-btn i {
+            font-size: 1.3rem;
         }
-        .nav-link.active {
-            color: #f24747 !important;
-            background-color: #fff0f0 !important;
+        .sidebar-btn.active {
+            background: linear-gradient(135deg, #ff8181, #f24747);
+            color: white;
+            box-shadow: 0 4px 10px rgba(242, 71, 71, 0.2);
         }
-        
-        /* Form labels and custom inputs matching Wingo */
-        .field-label {
-            font-size: 0.9rem;
-            font-weight: 600;
+        .sidebar-btn.active i {
+            color: white;
+        }
+
+        /* Right Content Area Game Cards */
+        .lobby-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .section-hdr {
+            font-size: 0.85rem;
+            font-weight: 700;
             color: #2c3e50;
-            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            margin-bottom: 5px;
         }
-        .field-label i {
-            color: #ff6c6c;
-            font-size: 1.05rem;
+        .section-hdr i {
+            color: #ff5252;
         }
-        .input-group-custom {
-            display: flex;
+        
+        /* 2-Column Game Recommendations */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .game-card {
             background-color: white;
             border-radius: 12px;
-            padding: 6px 12px;
-            align-items: center;
-            margin-bottom: 18px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            border: 1px solid #e9ecef;
-        }
-        .country-select {
-            border: none;
-            background: transparent;
-            font-weight: 600;
-            color: #495057;
-            padding-right: 15px;
-            margin-right: 10px;
-            border-right: 1px solid #dee2e6;
-            outline: none;
-            font-size: 0.95rem;
-        }
-        .input-field {
-            border: none;
-            width: 100%;
-            outline: none;
-            font-size: 0.95rem;
-            color: #212529;
-            background: transparent;
-        }
-        .input-field::placeholder {
-            color: #adb5bd;
-        }
-        .pw-toggle-btn {
-            background: transparent;
-            border: none;
-            color: #adb5bd;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            position: relative;
             cursor: pointer;
-            padding: 0 5px;
+            transition: transform 0.15s ease;
         }
-        
-        /* Round Checkbox Agreement */
-        .agreement-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.82rem;
-            color: #7f8c9d;
-            margin-top: 5px;
-            margin-bottom: 25px;
+        .game-card:active {
+            transform: scale(0.97);
         }
-        .round-checkbox {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            border: 2px solid #ff6c6c;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .round-checkbox.checked {
-            background-color: #ff6c6c;
-        }
-        .round-checkbox i {
+        .hot-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #ff5252, #d81b60);
             color: white;
-            font-size: 0.65rem;
-            display: none;
-        }
-        .round-checkbox.checked i {
-            display: block;
-        }
-        .agreement-link {
-            color: #ff6c6c;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        /* Action Buttons */
-        .btn-action-solid {
-            background: linear-gradient(135deg, #ff8181, #f24747);
-            border: none;
-            color: white;
-            font-weight: 700;
-            font-size: 1.05rem;
-            padding: 12px;
-            border-radius: 25px;
-            width: 100%;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 12px rgba(242, 71, 71, 0.25);
-            transition: transform 0.1s ease;
-        }
-        .btn-action-solid:active {
-            transform: scale(0.98);
-        }
-        .btn-action-outline {
-            background: transparent;
-            border: 1.5px solid #ff6c6c;
-            color: #ff6c6c;
-            font-weight: 700;
-            font-size: 1.05rem;
-            padding: 11px;
-            border-radius: 25px;
-            width: 100%;
-            transition: all 0.2s ease;
-        }
-        .btn-action-outline:active {
-            transform: scale(0.98);
-        }
-        .btn-action-outline span {
-            color: #f24747;
+            font-size: 0.6rem;
             font-weight: 800;
+            padding: 2px 6px;
+            border-bottom-left-radius: 8px;
+            z-index: 5;
+            text-transform: uppercase;
         }
-        
-        .forgot-link {
-            text-align: right;
-            font-size: 0.85rem;
-            margin-top: -10px;
-            margin-bottom: 25px;
+        .game-thumbnail {
+            width: 100%;
+            height: 90px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
         }
-        .forgot-link a {
-            color: #7f8c9d;
-            text-decoration: none;
+        .game-info-strip {
+            background-color: #ffeff0;
+            color: #f24747;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 4px 0;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
         }
-        .remember-checkbox {
+
+        /* Dynamic Banners */
+        .desktop-promo-banner {
+            background: linear-gradient(135deg, #ff7e7e, #f24747);
+            color: white;
+            border-radius: 25px;
+            padding: 8px 16px;
             display: flex;
+            justify-content: center;
             align-items: center;
             gap: 8px;
+            margin: 15px 12px 10px 12px;
             font-size: 0.85rem;
-            color: #7f8c9d;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(242, 71, 71, 0.2);
+            cursor: pointer;
         }
-        .remember-checkbox input {
-            accent-color: #ff6c6c;
-            width: 16px;
-            height: 16px;
+        .desktop-promo-banner i {
+            font-size: 1.05rem;
+        }
+
+        /* Bottom Nav Bar layout matching screenshot */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #ffffff;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.04);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+        .nav-item-btn {
+            color: #7f8c9d;
+            text-decoration: none;
+            font-size: 0.72rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            position: relative;
+        }
+        .nav-item-btn.active {
+            color: #f24747;
+        }
+        .nav-item-btn i {
+            font-size: 1.25rem;
+            margin-bottom: 2px;
+        }
+        
+        /* Raised Center Diamond Button */
+        .raised-nav-btn {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #ff8181, #f24747);
+            border-radius: 50%;
+            border: 4px solid #ffffff;
+            box-shadow: 0 -3px 10px rgba(242, 71, 71, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            text-decoration: none;
+        }
+        .raised-nav-btn i {
+            font-size: 1.5rem;
+        }
+        .raised-nav-label {
+            margin-top: 28px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #7f8c9d;
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- Header Banner Panel -->
-    <div class="header-banner">
-        <div class="top-action-bar">
-            <a href="#" class="back-icon" id="backActionBtn"><i class="fa-solid fa-chevron-left"></i></a>
-            <!-- OK.Win logo text rendering -->
-            <h4 class="mb-0 fw-bold d-flex align-items-center text-white" style="letter-spacing: 0.5px;">
-                <i class="fa-solid fa-circle-play me-2"></i>OK.Win
-            </h4>
-            <div class="lang-selector">
-                <img class="flag-icon" src="https://flagcdn.com/w40/us.png" alt="US flag"> EN
+    <!-- Header banner -->
+    <header class="app-header">
+        <div class="header-logo">
+            <i class="fa-solid fa-circle-play"></i>OK.Win
+        </div>
+        <div class="header-actions">
+            <i class="fa-solid fa-envelope red-dot" onclick="alert('No new mail notifications.')"></i>
+            <i class="fa-solid fa-download" onclick="alert('Downloading OK.Win App...')"></i>
+        </div>
+    </header>
+
+    <!-- Banner Carousel -->
+    <div id="bannerCarousel" class="carousel slide banner-carousel" data-bs-ride="carousel" data-bs-interval="3000">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80" alt="Slide 1">
+                <div class="carousel-caption d-none d-md-block" style="background: rgba(0,0,0,0.5); font-size: 0.8rem; bottom: 0;">
+                    Install 1.1.1.1 DNS for Faster Browsing
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=400&q=80" alt="Slide 2">
+                <div class="carousel-caption d-none d-md-block" style="background: rgba(0,0,0,0.5); font-size: 0.8rem; bottom: 0;">
+                    Earn 100K RS sharing links
+                </div>
             </div>
         </div>
-        
-        <h2 class="banner-title" id="bannerTitle">Register</h2>
-        <p class="banner-subtitle mb-0" id="bannerSubtitle">Please register by phone number or email</p>
     </div>
-    
-    <!-- Form Card Panel -->
-    <div class="form-card">
-        <!-- Login/Register toggle tabs -->
-        <ul class="nav nav-tabs" id="authTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="phone-tab" data-bs-toggle="tab" data-bs-target="#phone-panel" type="button" role="tab">
-                    <i class="fa-solid fa-mobile-screen-button"></i>
-                    <span id="tabLabel">Register your phone</span>
-                </button>
-            </li>
-        </ul>
-        
-        <!-- Registration Form Panel -->
-        <div class="tab-content" id="authContent">
-            <div class="tab-pane fade show active" id="phone-panel" role="tabpanel">
-                <form id="authForm">
-                    <!-- Phone Number Input -->
-                    <div class="field-label">
-                        <i class="fa-solid fa-mobile-screen-button"></i> Phone number
-                    </div>
-                    <div class="input-group-custom">
-                        <select class="country-select">
-                            <option value="+91">+91</option>
-                            <option value="+1">+1</option>
-                            <option value="+86">+86</option>
-                        </select>
-                        <input type="tel" class="input-field" id="authPhone" placeholder="Please enter the phone number" required>
-                    </div>
-                    
-                    <!-- Password Field -->
-                    <div class="field-label">
-                        <i class="fa-solid fa-lock" style="color: #ff6c6c;"></i> <span id="pwdLabel">Set password</span>
-                    </div>
-                    <div class="input-group-custom">
-                        <input type="password" class="input-field" id="authPassword" placeholder="Set password" required>
-                        <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('authPassword', this)">
-                            <i class="fa-solid fa-eye-slash"></i>
-                        </button>
-                    </div>
-                    
-                    <!-- Confirm Password Field (Only visible during Register) -->
-                    <div id="confirmPasswordGroup">
-                        <div class="field-label">
-                            <i class="fa-solid fa-lock" style="color: #ff6c6c;"></i> Confirm password
-                        </div>
-                        <div class="input-group-custom">
-                            <input type="password" class="input-field" id="authConfirmPassword" placeholder="Confirm password">
-                            <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('authConfirmPassword', this)">
-                                <i class="fa-solid fa-eye-slash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Invite Code (Only visible during Register) -->
-                    <div id="inviteCodeGroup">
-                        <div class="field-label">
-                            <i class="fa-solid fa-user-tag"></i> Invite code
-                        </div>
-                        <div class="input-group-custom">
-                            <input type="text" class="input-field" id="authInviteCode" value="543554831193">
-                        </div>
-                    </div>
-                    
-                    <!-- Remember password / Forgot password row (Only visible during Login) -->
-                    <div id="loginAddonsRow" class="d-none justify-content-between align-items-center mb-4">
-                        <div class="remember-checkbox">
-                            <input type="checkbox" id="rememberPwd" checked>
-                            <label for="rememberPwd">Remember password</label>
-                        </div>
-                        <div class="forgot-link">
-                            <a href="#">Forgot password?</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Privacy Agreement Box (Only visible during Register) -->
-                    <div class="agreement-row" id="agreementRow">
-                        <div class="round-checkbox checked" id="agreementCheckbox" onclick="toggleCheckbox()">
-                            <i class="fa-solid fa-check"></i>
-                        </div>
-                        <span>I have read and agree <a href="#" class="agreement-link">【Privacy Agreement】</a></span>
-                    </div>
-                    
-                    <div id="alertBox" class="alert alert-danger d-none py-2 text-center" role="alert" style="border-radius: 10px;"></div>
-                    <div id="successBox" class="alert alert-success d-none py-2 text-center" role="alert" style="border-radius: 10px;"></div>
-                    
-                    <!-- Buttons Layout -->
-                    <button type="submit" class="btn-action-solid" id="primarySubmitBtn">Register</button>
-                    
-                    <button type="button" class="btn-action-outline" id="secondaryToggleBtn" onclick="toggleAuthMode()">
-                        I have an account <span>Login</span>
-                    </button>
-                </form>
-            </div>
+
+    <!-- Ticker Notice Bar -->
+    <div class="notice-bar">
+        <i class="fa-solid fa-volume-high"></i>
+        <div class="notice-marquee">
+            <marquee scrollamount="3">Safeguard against scams!! Ensure deposits are made only through our official OK.Win gateway channels.</marquee>
         </div>
+        <button class="notice-detail-btn" onclick="alert('Official Notice: Please safeguard your passwords and UPI details.')">
+            <i class="fa-solid fa-fire"></i> Detail
+        </button>
+    </div>
+
+    <!-- Main Grid Content -->
+    <div class="lobby-grid">
+        <!-- Left Categories Sidebar -->
+        <aside class="lobby-sidebar">
+            <button class="sidebar-btn active" id="btn-popular">
+                <i class="fa-solid fa-trophy" style="color: #ffae19;"></i>
+                Popular
+            </button>
+            <button class="sidebar-btn" id="btn-lottery">
+                <i class="fa-solid fa-ticket" style="color: #f24747;"></i>
+                Lottery
+            </button>
+            <button class="sidebar-btn" id="btn-mini">
+                <i class="fa-solid fa-gamepad" style="color: #2b70f0;"></i>
+                Mini games
+            </button>
+            <button class="sidebar-btn" id="btn-slots">
+                <i class="fa-solid fa-gem" style="color: #bd1df0;"></i>
+                Slots
+            </button>
+            <button class="sidebar-btn" id="btn-fishing">
+                <i class="fa-solid fa-fish" style="color: #1dd2f0;"></i>
+                Fishing
+            </button>
+        </aside>
+
+        <!-- Right Content Cards -->
+        <main class="lobby-content">
+            <div class="section-hdr">
+                <i class="fa-solid fa-star"></i> Platform recommendation
+            </div>
+            
+            <div class="game-grid">
+                <!-- Aviator Card 1 -->
+                <div class="game-card" onclick="playGame('Aviator')">
+                    <span class="hot-badge">Hot</span>
+                    <div class="game-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1540959733332-eab4deceeaf7?auto=format&fit=crop&w=150&q=80');">
+                        <!-- Dark overlay with game title styling -->
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.5);">
+                            <span class="text-white fw-bold fs-6">Aviator Red</span>
+                        </div>
+                    </div>
+                    <div class="game-info-strip">RTP 97.28%</div>
+                </div>
+
+                <!-- Aviator Card 2 -->
+                <div class="game-card" onclick="playGame('Aviator')">
+                    <span class="hot-badge">Hot</span>
+                    <div class="game-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=150&q=80');">
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.5);">
+                            <span class="text-white fw-bold fs-6">Aviator Blue</span>
+                        </div>
+                    </div>
+                    <div class="game-info-strip">RTP 97.14%</div>
+                </div>
+
+                <!-- Wingo Card (Target Game) -->
+                <div class="game-card" onclick="playGame('Wingo')">
+                    <span class="hot-badge">Hot</span>
+                    <div class="game-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&w=150&q=80');">
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(238,98,4,0.65);">
+                            <span class="text-white fw-bold fs-5">WINGO</span>
+                        </div>
+                    </div>
+                    <div class="game-info-strip" style="background-color: #fff3e0; color: #e65100;">RTP 96.63%</div>
+                </div>
+
+                <!-- Aviator Alternative -->
+                <div class="game-card" onclick="playGame('Aviator')">
+                    <span class="hot-badge">Hot</span>
+                    <div class="game-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=150&q=80');">
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.5);">
+                            <span class="text-white fw-bold fs-6">Aviator Max</span>
+                        </div>
+                    </div>
+                    <div class="game-info-strip">RTP 97.15%</div>
+                </div>
+
+                <!-- Cricket -->
+                <div class="game-card" onclick="playGame('Cricket')">
+                    <span class="hot-badge">Hot</span>
+                    <div class="game-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1531415080290-bc9b89980a65?auto=format&fit=crop&w=150&q=80');">
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.45);">
+                            <span class="text-white fw-bold fs-6">Cricket</span>
+                        </div>
+                    </div>
+                    <div class="game-info-strip">RTP 97.54%</div>
+                </div>
+
+                <!-- PUBG -->
+                <div class="game-card" onclick="playGame('PUBG')">
+                    <span class="hot-badge">Hot</span>
+                    <div class="game-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=150&q=80');">
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.65);">
+                            <span class="text-white fw-bold fs-6">PUBG IMIN</span>
+                        </div>
+                    </div>
+                    <div class="game-info-strip">RTP 97.48%</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Promotion Add to Desktop Banner -->
+    <div class="desktop-promo-banner" onclick="alert('Adding OK.Win shortcut to your screen...')">
+        <i class="fa-solid fa-square-plus"></i> Add to Desktop
+    </div>
+
+    <!-- Bottom Nav Bar with Center Promotion Diamond -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item-btn active">
+            <i class="fa-solid fa-house"></i>Home
+        </a>
+        <a href="#" class="nav-item-btn" onclick="alert('No activity offers available today.')">
+            <i class="fa-solid fa-gift"></i>Activity
+        </a>
+        
+        <!-- Center Raised Diamond -->
+        <a href="#" class="raised-nav-btn" onclick="alert('Promotion referrals are coming soon!')">
+            <i class="fa-solid fa-gem"></i>
+        </a>
+        <div class="raised-nav-label">Promotion</div>
+        
+        <a href="recharge.html" class="nav-item-btn">
+            <i class="fa-solid fa-wallet"></i>Wallet
+        </a>
+        <a href="#" class="nav-item-btn" id="accountNavBtn">
+            <i class="fa-solid fa-user"></i>Account
+        </a>
     </div>
 </div>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Firebase API Helper -->
-<script src="firebase-config.js"></script>
 <script>
-    let isRegisterMode = true;
+    const userSession = localStorage.getItem('wingo_user');
 
-    // Toggle showing password values
-    function togglePasswordVisibility(fieldId, btnEl) {
-        const input = document.getElementById(fieldId);
-        const icon = btnEl.querySelector('i');
-        if (input.type === 'password') {
-            input.type = 'text';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        } else {
-            input.type = 'password';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
+    // Handle Game Launch Redirect
+    function playGame(gameName) {
+        if (!userSession) {
+            alert("Please Login or Register to play!");
+            window.location.href = 'login.html';
+            return;
         }
-    }
-
-    // Toggle round checkbox state
-    function toggleCheckbox() {
-        const check = document.getElementById('agreementCheckbox');
-        check.classList.toggle('checked');
-    }
-
-    // Switch between Login and Register Mode
-    function toggleAuthMode() {
-        isRegisterMode = !isRegisterMode;
-        
-        const bannerTitle = document.getElementById('bannerTitle');
-        const bannerSubtitle = document.getElementById('bannerSubtitle');
-        const tabLabel = document.getElementById('tabLabel');
-        const pwdLabel = document.getElementById('pwdLabel');
-        const confirmGroup = document.getElementById('confirmPasswordGroup');
-        const inviteGroup = document.getElementById('inviteCodeGroup');
-        const addonsRow = document.getElementById('loginAddonsRow');
-        const agreementRow = document.getElementById('agreementRow');
-        const primarySubmitBtn = document.getElementById('primarySubmitBtn');
-        const secondaryToggleBtn = document.getElementById('secondaryToggleBtn');
-        const alertBox = document.getElementById('alertBox');
-        const successBox = document.getElementById('successBox');
-        
-        alertBox.classList.add('d-none');
-        successBox.classList.add('d-none');
-        document.getElementById('authForm').reset();
-        document.getElementById('agreementCheckbox').classList.add('checked');
-        
-        if (isRegisterMode) {
-            bannerTitle.innerText = "Register";
-            bannerSubtitle.innerText = "Please register by phone number or email";
-            tabLabel.innerText = "Register your phone";
-            pwdLabel.innerText = "Set password";
-            confirmGroup.classList.remove('d-none');
-            inviteGroup.classList.remove('d-none');
-            addonsRow.classList.add('d-none');
-            addonsRow.classList.remove('d-flex');
-            agreementRow.classList.remove('d-none');
-            primarySubmitBtn.innerText = "Register";
-            secondaryToggleBtn.innerHTML = "I have an account <span>Login</span>";
-        } else {
-            bannerTitle.innerText = "Log in";
-            bannerSubtitle.innerText = "Please log in with your phone number or email\nIf you forget your password, please contact customer service";
-            tabLabel.innerText = "Phone Number";
-            pwdLabel.innerText = "Password";
-            confirmGroup.classList.add('d-none');
-            inviteGroup.classList.add('d-none');
-            addonsRow.classList.remove('d-none');
-            addonsRow.classList.add('d-flex');
-            agreementRow.classList.add('d-none');
-            primarySubmitBtn.innerText = "Log in";
-            secondaryToggleBtn.innerHTML = "No account? <span>Register</span>";
-        }
-    }
-
-    // Submit handler
-    document.getElementById('authForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const phone = document.getElementById('authPhone').value.trim();
-        const password = document.getElementById('authPassword').value;
-        const alertBox = document.getElementById('alertBox');
-        const successBox = document.getElementById('successBox');
-        
-        alertBox.classList.add('d-none');
-        successBox.classList.add('d-none');
-        
-        if (isRegisterMode) {
-            // Register Process
-            const confirmPassword = document.getElementById('authConfirmPassword').value;
-            const inviteCode = document.getElementById('authInviteCode').value.trim();
-            const checked = document.getElementById('agreementCheckbox').classList.contains('checked');
-            
-            if (!checked) {
-                alertBox.innerText = "Please read and agree to the Privacy Agreement.";
-                alertBox.classList.remove('d-none');
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                alertBox.innerText = "Passwords do not match.";
-                alertBox.classList.remove('d-none');
-                return;
-            }
-            
-            // Check Firebase if user exists
-            const userCheck = await firebaseRequest(`users/${phone}`);
-            if (userCheck) {
-                alertBox.innerText = "Phone number already registered.";
-                alertBox.classList.remove('d-none');
-                return;
-            }
-            
-            // Create user details in Firebase
-            const usercode = 'WINGO' + Math.floor(100000 + Math.random() * 900000);
-            const newUser = {
-                username: phone,
-                password: password,
-                usercode: usercode,
-                refcode: inviteCode,
-                balance: 20, // Start balance ₹20
-                bonus: 0,
-                hold: 0,
-                notice: "Welcome to Wingo!",
-                status: "active"
-            };
-            
-            const result = await firebaseRequest(`users/${phone}`, 'PUT', newUser);
-            if (result) {
-                successBox.innerText = "Registration successful! Please toggle to Login.";
-                successBox.classList.remove('d-none');
-                document.getElementById('authForm').reset();
-            } else {
-                alertBox.innerText = "Failed to connect to server. Please try again.";
-                alertBox.classList.remove('d-none');
-            }
-            
-        } else {
-            // Login Process
-            const userData = await firebaseRequest(`users/${phone}`);
-            if (!userData) {
-                alertBox.innerText = "Phone number not registered. Please register first.";
-                alertBox.classList.remove('d-none');
-                return;
-            }
-            
-            if (userData.status === 'blocked') {
-                alertBox.innerText = "Account blocked. Contact customer service.";
-                alertBox.classList.remove('d-none');
-                return;
-            }
-            
-            if (userData.password !== password) {
-                alertBox.innerText = "Password incorrect. Please check.";
-                alertBox.classList.remove('d-none');
-                return;
-            }
-            
-            // Success Login
-            localStorage.setItem('wingo_user', phone);
+        if (gameName === 'Wingo') {
             window.location.href = 'game.html';
-        }
-    });
-
-    // Handle back chevron action
-    document.getElementById('backActionBtn').addEventListener('click', (e) => {
-        e.preventDefault();
-        if (!isRegisterMode) {
-            toggleAuthMode();
         } else {
-            alert("Already on registration page.");
+            alert(gameName + " is under development. Play WINGO!");
+        }
+    }
+
+    // Account nav redirection
+    document.getElementById('accountNavBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (userSession) {
+            alert("Logged in as: " + userSession + "\nGo to Wallet page to Logout.");
+            window.location.href = 'recharge.html';
+        } else {
+            window.location.href = 'login.html';
         }
     });
 </script>
