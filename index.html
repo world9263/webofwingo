@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wingo - Login / Register</title>
+    <title>OK.Win - Login / Register</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -11,7 +11,7 @@
     <style>
         body {
             background-color: #f7f9fc;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -21,11 +21,11 @@
         .app-container {
             width: 100%;
             max-width: 420px;
-            background: #ffffff;
+            background: #f7f9fc;
             min-height: 100vh;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             display: flex;
-            flex-column: column;
+            flex-direction: column;
             position: relative;
         }
         @media (min-width: 420px) {
@@ -35,235 +35,543 @@
                 overflow: hidden;
             }
         }
+        
+        /* Banner Gradient matches Wingo exactly */
         .header-banner {
-            background: linear-gradient(135deg, #fb4e4e, #d82c2c);
+            background: linear-gradient(135deg, #ff6c6c, #f24747);
             color: white;
-            padding: 40px 20px;
-            text-align: center;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-        }
-        .brand-logo {
-            font-size: 3rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .banner-subtitle {
-            font-size: 0.95rem;
-            opacity: 0.9;
-        }
-        .form-container {
-            padding: 30px 24px;
-            flex-grow: 1;
-        }
-        .nav-tabs {
-            border-bottom: none;
-            margin-bottom: 25px;
-        }
-        .nav-link {
-            border: none !important;
-            color: #6c757d;
-            font-weight: 600;
-            font-size: 1.1rem;
-            padding: 10px 0;
-            margin-right: 25px;
+            padding: 20px 16px 45px 16px;
             position: relative;
         }
-        .nav-link.active {
-            color: #fb4e4e !important;
-            background: transparent !important;
+        .top-action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
         }
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: #fb4e4e;
+        .back-icon {
+            font-size: 1.4rem;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .logo-img {
+            height: 32px;
+        }
+        .lang-selector {
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .flag-icon {
+            width: 22px;
+            height: 15px;
             border-radius: 2px;
+            object-fit: cover;
         }
-        .input-group-text {
-            background: transparent;
-            border-right: none;
-            color: #adb5bd;
+        .banner-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
-        .form-control {
-            border-left: none;
-            padding: 12px;
+        .banner-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            line-height: 1.4;
         }
-        .form-control:focus {
-            box-shadow: none;
-            border-color: #ced4da;
+        
+        /* Form content container overlaps slightly */
+        .form-card {
+            background-color: #f7f9fc;
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+            margin-top: -20px;
+            padding: 24px 20px;
+            flex-grow: 1;
+            z-index: 10;
         }
-        .input-group:focus-within .input-group-text {
-            color: #fb4e4e;
-            border-color: #fb4e4e;
+        
+        /* Custom tabs design */
+        .nav-tabs {
+            border-bottom: none;
+            justify-content: center;
+            margin-bottom: 25px;
+            background-color: white;
+            border-radius: 12px;
+            padding: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
-        .input-group:focus-within .form-control {
-            border-color: #fb4e4e;
+        .nav-item {
+            flex: 1;
         }
-        .btn-primary {
-            background: linear-gradient(135deg, #fb4e4e, #d82c2c);
-            border: none;
-            padding: 12px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(251, 78, 78, 0.3);
+        .nav-link {
+            width: 100%;
+            border: none !important;
+            color: #7f8c9d;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 10px !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
             transition: all 0.2s ease;
         }
-        .btn-primary:hover, .btn-primary:active {
-            background: linear-gradient(135deg, #e03d3d, #c22222) !important;
-            transform: translateY(-1px);
+        .nav-link i {
+            font-size: 1.2rem;
+        }
+        .nav-link.active {
+            color: #f24747 !important;
+            background-color: #fff0f0 !important;
+        }
+        
+        /* Form labels and custom inputs matching Wingo */
+        .field-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .field-label i {
+            color: #ff6c6c;
+            font-size: 1.05rem;
+        }
+        .input-group-custom {
+            display: flex;
+            background-color: white;
+            border-radius: 12px;
+            padding: 6px 12px;
+            align-items: center;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            border: 1px solid #e9ecef;
+        }
+        .country-select {
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            color: #495057;
+            padding-right: 15px;
+            margin-right: 10px;
+            border-right: 1px solid #dee2e6;
+            outline: none;
+            font-size: 0.95rem;
+        }
+        .input-field {
+            border: none;
+            width: 100%;
+            outline: none;
+            font-size: 0.95rem;
+            color: #212529;
+            background: transparent;
+        }
+        .input-field::placeholder {
+            color: #adb5bd;
+        }
+        .pw-toggle-btn {
+            background: transparent;
+            border: none;
+            color: #adb5bd;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+        
+        /* Round Checkbox Agreement */
+        .agreement-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: #7f8c9d;
+            margin-top: 5px;
+            margin-bottom: 25px;
+        }
+        .round-checkbox {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #ff6c6c;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .round-checkbox.checked {
+            background-color: #ff6c6c;
+        }
+        .round-checkbox i {
+            color: white;
+            font-size: 0.65rem;
+            display: none;
+        }
+        .round-checkbox.checked i {
+            display: block;
+        }
+        .agreement-link {
+            color: #ff6c6c;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        /* Action Buttons */
+        .btn-action-solid {
+            background: linear-gradient(135deg, #ff8181, #f24747);
+            border: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 12px;
+            border-radius: 25px;
+            width: 100%;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(242, 71, 71, 0.25);
+            transition: transform 0.1s ease;
+        }
+        .btn-action-solid:active {
+            transform: scale(0.98);
+        }
+        .btn-action-outline {
+            background: transparent;
+            border: 1.5px solid #ff6c6c;
+            color: #ff6c6c;
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 11px;
+            border-radius: 25px;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+        .btn-action-outline:active {
+            transform: scale(0.98);
+        }
+        .btn-action-outline span {
+            color: #f24747;
+            font-weight: 800;
+        }
+        
+        .forgot-link {
+            text-align: right;
+            font-size: 0.85rem;
+            margin-top: -10px;
+            margin-bottom: 25px;
+        }
+        .forgot-link a {
+            color: #7f8c9d;
+            text-decoration: none;
+        }
+        .remember-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #7f8c9d;
+        }
+        .remember-checkbox input {
+            accent-color: #ff6c6c;
+            width: 16px;
+            height: 16px;
         }
     </style>
 </head>
 <body>
 
-<div class="app-container d-flex flex-column">
+<div class="app-container">
+    <!-- Header Banner Panel -->
     <div class="header-banner">
-        <div class="brand-logo"><i class="fa-solid fa-gamepad me-2"></i>WINGO</div>
-        <div class="banner-subtitle">Predict & Win • Serverless Sandbox Game</div>
+        <div class="top-action-bar">
+            <a href="#" class="back-icon" id="backActionBtn"><i class="fa-solid fa-chevron-left"></i></a>
+            <!-- OK.Win logo text rendering -->
+            <h4 class="mb-0 fw-bold d-flex align-items-center text-white" style="letter-spacing: 0.5px;">
+                <i class="fa-solid fa-circle-play me-2"></i>OK.Win
+            </h4>
+            <div class="lang-selector">
+                <img class="flag-icon" src="https://flagcdn.com/w40/us.png" alt="US flag"> EN
+            </div>
+        </div>
+        
+        <h2 class="banner-title" id="bannerTitle">Register</h2>
+        <p class="banner-subtitle mb-0" id="bannerSubtitle">Please register by phone number or email</p>
     </div>
     
-    <div class="form-container">
-        <!-- Tabs Toggle -->
+    <!-- Form Card Panel -->
+    <div class="form-card">
+        <!-- Login/Register toggle tabs -->
         <ul class="nav nav-tabs" id="authTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-panel" type="button" role="tab">Login</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-panel" type="button" role="tab">Register</button>
+                <button class="nav-link active" id="phone-tab" data-bs-toggle="tab" data-bs-target="#phone-panel" type="button" role="tab">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                    <span id="tabLabel">Register your phone</span>
+                </button>
             </li>
         </ul>
         
-        <div class="tab-content" id="authTabsContent">
-            <!-- Login Form Panel -->
-            <div class="tab-pane fade show active" id="login-panel" role="tabpanel">
-                <form id="loginForm">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                        <input type="text" class="form-control" id="loginUser" placeholder="Enter Username / Mobile" required>
+        <!-- Registration Form Panel -->
+        <div class="tab-content" id="authContent">
+            <div class="tab-pane fade show active" id="phone-panel" role="tabpanel">
+                <form id="authForm">
+                    <!-- Phone Number Input -->
+                    <div class="field-label">
+                        <i class="fa-solid fa-mobile-screen-button"></i> Phone number
                     </div>
-                    <div class="input-group mb-4">
-                        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-                        <input type="password" class="form-control" id="loginPass" placeholder="Enter Password" required>
+                    <div class="input-group-custom">
+                        <select class="country-select">
+                            <option value="+91">+91</option>
+                            <option value="+1">+1</option>
+                            <option value="+86">+86</option>
+                        </select>
+                        <input type="tel" class="input-field" id="authPhone" placeholder="Please enter the phone number" required>
                     </div>
-                    <div id="loginAlert" class="alert alert-danger d-none py-2 text-center" role="alert"></div>
-                    <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
-                </form>
-            </div>
-            
-            <!-- Register Form Panel -->
-            <div class="tab-pane fade" id="register-panel" role="tabpanel">
-                <form id="registerForm">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                        <input type="text" class="form-control" id="regUser" placeholder="Enter Username / Mobile" required>
+                    
+                    <!-- Password Field -->
+                    <div class="field-label">
+                        <i class="fa-solid fa-lock" style="color: #ff6c6c;"></i> <span id="pwdLabel">Set password</span>
                     </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-                        <input type="password" class="form-control" id="regPass" placeholder="Set Password" required>
+                    <div class="input-group-custom">
+                        <input type="password" class="input-field" id="authPassword" placeholder="Set password" required>
+                        <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('authPassword', this)">
+                            <i class="fa-solid fa-eye-slash"></i>
+                        </button>
                     </div>
-                    <div class="input-group mb-4">
-                        <span class="input-group-text"><i class="fa-solid fa-user-tag"></i></span>
-                        <input type="text" class="form-control" id="regRef" placeholder="Referral Code (Optional)">
+                    
+                    <!-- Confirm Password Field (Only visible during Register) -->
+                    <div id="confirmPasswordGroup">
+                        <div class="field-label">
+                            <i class="fa-solid fa-lock" style="color: #ff6c6c;"></i> Confirm password
+                        </div>
+                        <div class="input-group-custom">
+                            <input type="password" class="input-field" id="authConfirmPassword" placeholder="Confirm password">
+                            <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('authConfirmPassword', this)">
+                                <i class="fa-solid fa-eye-slash"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div id="regAlert" class="alert alert-danger d-none py-2 text-center" role="alert"></div>
-                    <div id="regSuccessAlert" class="alert alert-success d-none py-2 text-center" role="alert"></div>
-                    <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
+                    
+                    <!-- Invite Code (Only visible during Register) -->
+                    <div id="inviteCodeGroup">
+                        <div class="field-label">
+                            <i class="fa-solid fa-user-tag"></i> Invite code
+                        </div>
+                        <div class="input-group-custom">
+                            <input type="text" class="input-field" id="authInviteCode" value="543554831193">
+                        </div>
+                    </div>
+                    
+                    <!-- Remember password / Forgot password row (Only visible during Login) -->
+                    <div id="loginAddonsRow" class="d-none justify-content-between align-items-center mb-4">
+                        <div class="remember-checkbox">
+                            <input type="checkbox" id="rememberPwd" checked>
+                            <label for="rememberPwd">Remember password</label>
+                        </div>
+                        <div class="forgot-link">
+                            <a href="#">Forgot password?</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Privacy Agreement Box (Only visible during Register) -->
+                    <div class="agreement-row" id="agreementRow">
+                        <div class="round-checkbox checked" id="agreementCheckbox" onclick="toggleCheckbox()">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <span>I have read and agree <a href="#" class="agreement-link">【Privacy Agreement】</a></span>
+                    </div>
+                    
+                    <div id="alertBox" class="alert alert-danger d-none py-2 text-center" role="alert" style="border-radius: 10px;"></div>
+                    <div id="successBox" class="alert alert-success d-none py-2 text-center" role="alert" style="border-radius: 10px;"></div>
+                    
+                    <!-- Buttons Layout -->
+                    <button type="submit" class="btn-action-solid" id="primarySubmitBtn">Register</button>
+                    
+                    <button type="button" class="btn-action-outline" id="secondaryToggleBtn" onclick="toggleAuthMode()">
+                        I have an account <span>Login</span>
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Bootstrap JS Bundle -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Firebase Helper Initialization -->
+<!-- Firebase API Helper -->
 <script src="firebase-config.js"></script>
 <script>
-    // Handle Registration Submit
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const username = document.getElementById('regUser').value.trim();
-        const password = document.getElementById('regPass').value;
-        const refcode = document.getElementById('regRef').value.trim();
-        
-        const alertEl = document.getElementById('regAlert');
-        const successEl = document.getElementById('regSuccessAlert');
-        alertEl.classList.add('d-none');
-        successEl.classList.add('d-none');
-        
-        // Fetch if user already exists
-        const userCheck = await firebaseRequest(`users/${username}`);
-        if (userCheck) {
-            alertEl.innerText = "Username already exists!";
-            alertEl.classList.remove('d-none');
-            return;
-        }
-        
-        // Helper to generate code
-        const usercode = 'WINGO' + Math.floor(100000 + Math.random() * 900000);
-        
-        // Save user profile node
-        const newUser = {
-            username: username,
-            password: password,
-            usercode: usercode,
-            refcode: refcode,
-            balance: 20, // Welcome bonus of ₹20
-            bonus: 0,
-            hold: 0,
-            notice: "Welcome to Wingo serverless game platform!",
-            status: "active"
-        };
-        
-        const result = await firebaseRequest(`users/${username}`, 'PUT', newUser);
-        if (result) {
-            successEl.innerText = "Registered successfully! Toggle tab to Login.";
-            successEl.classList.remove('d-none');
-            document.getElementById('registerForm').reset();
+    let isRegisterMode = true;
+
+    // Toggle showing password values
+    function togglePasswordVisibility(fieldId, btnEl) {
+        const input = document.getElementById(fieldId);
+        const icon = btnEl.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
         } else {
-            alertEl.innerText = "Something went wrong. Please try again.";
-            alertEl.classList.remove('d-none');
+            input.type = 'password';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        }
+    }
+
+    // Toggle round checkbox state
+    function toggleCheckbox() {
+        const check = document.getElementById('agreementCheckbox');
+        check.classList.toggle('checked');
+    }
+
+    // Switch between Login and Register Mode
+    function toggleAuthMode() {
+        isRegisterMode = !isRegisterMode;
+        
+        const bannerTitle = document.getElementById('bannerTitle');
+        const bannerSubtitle = document.getElementById('bannerSubtitle');
+        const tabLabel = document.getElementById('tabLabel');
+        const pwdLabel = document.getElementById('pwdLabel');
+        const confirmGroup = document.getElementById('confirmPasswordGroup');
+        const inviteGroup = document.getElementById('inviteCodeGroup');
+        const addonsRow = document.getElementById('loginAddonsRow');
+        const agreementRow = document.getElementById('agreementRow');
+        const primarySubmitBtn = document.getElementById('primarySubmitBtn');
+        const secondaryToggleBtn = document.getElementById('secondaryToggleBtn');
+        const alertBox = document.getElementById('alertBox');
+        const successBox = document.getElementById('successBox');
+        
+        alertBox.classList.add('d-none');
+        successBox.classList.add('d-none');
+        document.getElementById('authForm').reset();
+        document.getElementById('agreementCheckbox').classList.add('checked');
+        
+        if (isRegisterMode) {
+            bannerTitle.innerText = "Register";
+            bannerSubtitle.innerText = "Please register by phone number or email";
+            tabLabel.innerText = "Register your phone";
+            pwdLabel.innerText = "Set password";
+            confirmGroup.classList.remove('d-none');
+            inviteGroup.classList.remove('d-none');
+            addonsRow.classList.add('d-none');
+            addonsRow.classList.remove('d-flex');
+            agreementRow.classList.remove('d-none');
+            primarySubmitBtn.innerText = "Register";
+            secondaryToggleBtn.innerHTML = "I have an account <span>Login</span>";
+        } else {
+            bannerTitle.innerText = "Log in";
+            bannerSubtitle.innerText = "Please log in with your phone number or email\nIf you forget your password, please contact customer service";
+            tabLabel.innerText = "Phone Number";
+            pwdLabel.innerText = "Password";
+            confirmGroup.classList.add('d-none');
+            inviteGroup.classList.add('d-none');
+            addonsRow.classList.remove('d-none');
+            addonsRow.classList.add('d-flex');
+            agreementRow.classList.add('d-none');
+            primarySubmitBtn.innerText = "Log in";
+            secondaryToggleBtn.innerHTML = "No account? <span>Register</span>";
+        }
+    }
+
+    // Submit handler
+    document.getElementById('authForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const phone = document.getElementById('authPhone').value.trim();
+        const password = document.getElementById('authPassword').value;
+        const alertBox = document.getElementById('alertBox');
+        const successBox = document.getElementById('successBox');
+        
+        alertBox.classList.add('d-none');
+        successBox.classList.add('d-none');
+        
+        if (isRegisterMode) {
+            // Register Process
+            const confirmPassword = document.getElementById('authConfirmPassword').value;
+            const inviteCode = document.getElementById('authInviteCode').value.trim();
+            const checked = document.getElementById('agreementCheckbox').classList.contains('checked');
+            
+            if (!checked) {
+                alertBox.innerText = "Please read and agree to the Privacy Agreement.";
+                alertBox.classList.remove('d-none');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alertBox.innerText = "Passwords do not match.";
+                alertBox.classList.remove('d-none');
+                return;
+            }
+            
+            // Check Firebase if user exists
+            const userCheck = await firebaseRequest(`users/${phone}`);
+            if (userCheck) {
+                alertBox.innerText = "Phone number already registered.";
+                alertBox.classList.remove('d-none');
+                return;
+            }
+            
+            // Create user details in Firebase
+            const usercode = 'WINGO' + Math.floor(100000 + Math.random() * 900000);
+            const newUser = {
+                username: phone,
+                password: password,
+                usercode: usercode,
+                refcode: inviteCode,
+                balance: 20, // Start balance ₹20
+                bonus: 0,
+                hold: 0,
+                notice: "Welcome to Wingo!",
+                status: "active"
+            };
+            
+            const result = await firebaseRequest(`users/${phone}`, 'PUT', newUser);
+            if (result) {
+                successBox.innerText = "Registration successful! Please toggle to Login.";
+                successBox.classList.remove('d-none');
+                document.getElementById('authForm').reset();
+            } else {
+                alertBox.innerText = "Failed to connect to server. Please try again.";
+                alertBox.classList.remove('d-none');
+            }
+            
+        } else {
+            // Login Process
+            const userData = await firebaseRequest(`users/${phone}`);
+            if (!userData) {
+                alertBox.innerText = "Phone number not registered. Please register first.";
+                alertBox.classList.remove('d-none');
+                return;
+            }
+            
+            if (userData.status === 'blocked') {
+                alertBox.innerText = "Account blocked. Contact customer service.";
+                alertBox.classList.remove('d-none');
+                return;
+            }
+            
+            if (userData.password !== password) {
+                alertBox.innerText = "Password incorrect. Please check.";
+                alertBox.classList.remove('d-none');
+                return;
+            }
+            
+            // Success Login
+            localStorage.setItem('wingo_user', phone);
+            window.location.href = 'game.html';
         }
     });
 
-    // Handle Login Submit
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    // Handle back chevron action
+    document.getElementById('backActionBtn').addEventListener('click', (e) => {
         e.preventDefault();
-        const username = document.getElementById('loginUser').value.trim();
-        const password = document.getElementById('loginPass').value;
-        
-        const alertEl = document.getElementById('loginAlert');
-        alertEl.classList.add('d-none');
-        
-        const userData = await firebaseRequest(`users/${username}`);
-        if (!userData) {
-            alertEl.innerText = "Username not found. Please register.";
-            alertEl.classList.remove('d-none');
-            return;
+        if (!isRegisterMode) {
+            toggleAuthMode();
+        } else {
+            alert("Already on registration page.");
         }
-        
-        if (userData.status === 'blocked') {
-            alertEl.innerText = "Account blocked. Contact administrator.";
-            alertEl.classList.remove('d-none');
-            return;
-        }
-        
-        if (userData.password !== password) {
-            alertEl.innerText = "Password incorrect. Please check.";
-            alertEl.classList.remove('d-none');
-            return;
-        }
-        
-        // Success: save user session & redirect
-        localStorage.setItem('wingo_user', username);
-        window.location.href = 'game.html';
     });
 </script>
 </body>

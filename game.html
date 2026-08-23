@@ -297,7 +297,6 @@
     <div class="bottom-nav">
         <button class="nav-item-btn active"><i class="fa-solid fa-gamepad"></i>Game</button>
         <button class="nav-item-btn" onclick="window.location.href='recharge.html'"><i class="fa-solid fa-wallet"></i>Wallet</button>
-        <button class="nav-item-btn" onclick="window.location.href='admin.html'"><i class="fa-solid fa-user-gear"></i>Admin</button>
         <button class="nav-item-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i>Logout</button>
     </div>
 </div>
@@ -555,12 +554,7 @@
                 amount: amount
             };
             
-            // Record bet reference in Firebase for admin history auditing
-            firebaseRequest(`bets/${currentPeriod}/${username}`, 'PUT', {
-                bet_type: selectedBet,
-                amount: amount,
-                time: new Date().toISOString()
-            });
+            // Bet details are kept locally in memory, no Firebase save.
             
             document.getElementById('userBalance').innerText = parseFloat(userBalance).toFixed(2);
             betModal.hide();
