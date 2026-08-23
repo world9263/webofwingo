@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wingo - Recharge Account</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f1f3f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+            padding-bottom: 70px;
+        }
+        @media (min-width: 420px) {
+            .app-container {
+                min-height: 95vh;
+                border-radius: 20px;
+                overflow: hidden;
+            }
+        }
+        .header-section {
+            background: linear-gradient(135deg, #fb4e4e, #d82c2c);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .header-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-left: 15px;
+        }
+        .back-btn {
+            color: white;
+            font-size: 1.3rem;
+            background: transparent;
+            border: none;
+        }
+        .content-body {
+            padding: 20px;
+        }
+        .balance-card {
+            background-color: #fff5f5;
+            border: 1px solid #ffd8d8;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .balance-lbl { color: #8c96a3; font-size: 0.85rem; }
+        .balance-val { font-size: 1.3rem; font-weight: 700; color: #d82c2c; }
+        
+        .form-label { font-weight: 600; color: #495057; }
+        .btn-primary {
+            background: linear-gradient(135deg, #fb4e4e, #d82c2c);
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(251, 78, 78, 0.3);
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover, .btn-primary:active {
+            background: linear-gradient(135deg, #e03d3d, #c22222) !important;
+        }
+        
+        .qr-card {
+            border: 1px dashed #ced4da;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            background-color: #f8f9fa;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .qr-image { width: 160px; height: 160px; margin-bottom: 10px; }
+        .upi-text { font-size: 0.95rem; font-weight: bold; color: #495057; margin-top: 5px; }
+        
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #ffffff;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .nav-item-btn {
+            color: #8c96a3;
+            text-decoration: none;
+            font-size: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+        }
+        .nav-item-btn.active { color: #fb4e4e; }
+        .nav-item-btn i { font-size: 1.3rem; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-section">
+        <button class="back-btn" onclick="window.location.href='game.html'"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="header-title">Recharge Wallet</div>
+    </div>
+    
+    <div class="content-body">
+        <div class="balance-card">
+            <div>
+                <div class="balance-lbl">Current Balance</div>
+                <div class="balance-val">₹<span id="rechargeBalance">0.00</span></div>
+            </div>
+            <i class="fa-solid fa-wallet text-danger fa-2x opacity-25"></i>
+        </div>
+        
+        <!-- Step 1: Input Amount -->
+        <div id="step1">
+            <div class="mb-3">
+                <label class="form-label">Enter Recharge Amount (₹)</label>
+                <input type="number" class="form-control form-control-lg font-monospace text-success fw-bold" id="rechargeAmount" value="500" min="100" placeholder="Minimum ₹100">
+            </div>
+            <button class="btn btn-primary w-100" onclick="showQRCodeStep()">Next (Get QR Code)</button>
+        </div>
+        
+        <!-- Step 2: Pay via QR and submit UTR -->
+        <div id="step2" class="d-none">
+            <div class="qr-card">
+                <img id="upiQR" class="qr-image" src="" alt="Payment QR Code">
+                <div class="upi-text">UPI ID: <span id="paymentUPI">upi.id@pay</span></div>
+                <small class="text-muted">Scan the QR code above using any UPI App (PhonePe/GPay/Paytm) to pay.</small>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Enter 12-Digit UTR (Ref ID)</label>
+                <input type="text" class="form-control form-control-lg font-monospace text-center fw-bold" id="utrNumber" maxlength="12" placeholder="Enter Ref / UTR No.">
+                <small class="text-muted">Copy the Ref/UTR transaction ID from your payment app details.</small>
+            </div>
+            
+            <div id="rechargeAlert" class="alert alert-danger d-none py-2 text-center" role="alert"></div>
+            <div id="rechargeSuccess" class="alert alert-success d-none py-2 text-center" role="alert"></div>
+            
+            <button class="btn btn-primary w-100 mb-2" id="submitRechargeBtn">Submit UTR Ref</button>
+            <button class="btn btn-outline-secondary w-100" onclick="goBackStep1()">Go Back</button>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <button class="nav-item-btn" onclick="window.location.href='game.html'"><i class="fa-solid fa-gamepad"></i>Game</button>
+        <button class="nav-item-btn active"><i class="fa-solid fa-wallet"></i>Wallet</button>
+        <button class="nav-item-btn" onclick="window.location.href='admin.html'"><i class="fa-solid fa-user-gear"></i>Admin</button>
+        <button class="nav-item-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i>Logout</button>
+    </div>
+</div>
+
+<!-- Firebase API Helper -->
+<script src="firebase-config.js"></script>
+<script>
+    const username = localStorage.getItem('wingo_user');
+    if (!username) {
+        window.location.href = 'index.html';
+    }
+
+    let defaultUPI = 'payment@upi';
+
+    // Fetch user profile balance & admin set UPI ID
+    async function initPage() {
+        const profile = await firebaseRequest(`users/${username}`);
+        if (profile) {
+            document.getElementById('rechargeBalance').innerText = parseFloat(profile.balance ?? 0).toFixed(2);
+        }
+        
+        // Fetch Admin UPI setting
+        const settings = await firebaseRequest('settings');
+        if (settings && settings.upi_id) {
+            defaultUPI = settings.upi_id;
+        }
+    }
+
+    // Step navigation
+    function showQRCodeStep() {
+        const amount = parseInt(document.getElementById('rechargeAmount').value) || 0;
+        if (amount < 100) {
+            alert("Minimum deposit amount is ₹100.");
+            return;
+        }
+        
+        // Generate QR code dynamically via qrserver API
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=${encodeURIComponent(defaultUPI)}%26pn=Wingo%26am=${amount}%26cu=INR`;
+        document.getElementById('upiQR').src = qrUrl;
+        document.getElementById('paymentUPI').innerText = defaultUPI;
+        
+        document.getElementById('step1').classList.add('d-none');
+        document.getElementById('step2').classList.remove('d-none');
+    }
+
+    function goBackStep1() {
+        document.getElementById('step2').classList.add('d-none');
+        document.getElementById('step1').classList.remove('d-none');
+    }
+
+    // Submit Ref UTR logic
+    document.getElementById('submitRechargeBtn').addEventListener('click', async () => {
+        const utr = document.getElementById('utrNumber').value.trim();
+        const amount = parseInt(document.getElementById('rechargeAmount').value) || 0;
+        
+        const alertEl = document.getElementById('rechargeAlert');
+        const successEl = document.getElementById('rechargeSuccess');
+        alertEl.classList.add('d-none');
+        successEl.classList.add('d-none');
+        
+        if (utr.length !== 12 || isNaN(utr)) {
+            alertEl.innerText = "Please enter a valid 12-digit numeric UTR / Ref Number.";
+            alertEl.classList.remove('d-none');
+            return;
+        }
+        
+        // Check if this UTR has already been submitted
+        const checkUTR = await firebaseRequest(`recharges/${utr}`);
+        if (checkUTR) {
+            alertEl.innerText = "This UTR / transaction Reference has already been submitted!";
+            alertEl.classList.remove('d-none');
+            return;
+        }
+        
+        // Save deposit reference node in Firebase under pending status
+        const rechargeRequest = {
+            username: username,
+            amount: amount,
+            utr: utr,
+            status: "pending",
+            time: new Date().toLocaleString()
+        };
+        
+        const res = await firebaseRequest(`recharges/${utr}`, 'PUT', rechargeRequest);
+        if (res) {
+            successEl.innerText = "Recharge reference submitted! Wait for admin approval.";
+            successEl.classList.remove('d-none');
+            document.getElementById('utrNumber').value = '';
+            
+            // Redirect back to game after 3 seconds
+            setTimeout(() => {
+                window.location.href = 'game.html';
+            }, 3000);
+        } else {
+            alertEl.innerText = "Failed to submit request. Please try again.";
+            alertEl.classList.remove('d-none');
+        }
+    });
+
+    // Handle logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('wingo_user');
+        window.location.href = 'index.html';
+    });
+
+    initPage();
+</script>
+</body>
+</html>

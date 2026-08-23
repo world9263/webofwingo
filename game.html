@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wingo - Color Prediction Game</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f1f3f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: #f8f9fa;
+            min-height: 100vh;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+            padding-bottom: 70px; /* space for bottom nav bar */
+        }
+        @media (min-width: 420px) {
+            .app-container {
+                min-height: 95vh;
+                border-radius: 20px;
+                overflow: hidden;
+            }
+        }
+        .profile-section {
+            background: linear-gradient(135deg, #fb4e4e, #d82c2c);
+            color: white;
+            padding: 24px 20px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+        .balance-title {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-bottom: 2px;
+        }
+        .balance-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        .user-id {
+            font-size: 0.85rem;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .recharge-btn {
+            background-color: #ffffff;
+            color: #d82c2c;
+            font-weight: bold;
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 0.9rem;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .game-status-card {
+            background-color: white;
+            border-radius: 12px;
+            margin: 15px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .period-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        .period-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #212529;
+        }
+        .timer-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-align: right;
+        }
+        .timer-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fb4e4e;
+            font-family: monospace;
+        }
+        .color-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px;
+        }
+        .btn-color {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.1s ease;
+        }
+        .btn-color:active {
+            transform: scale(0.97);
+        }
+        .btn-green { background: linear-gradient(135deg, #28a745, #1e7e34); }
+        .btn-violet { background: linear-gradient(135deg, #6f42c1, #5a32a3); }
+        .btn-red { background: linear-gradient(135deg, #dc3545, #bd2130); }
+        
+        .number-grid {
+            background-color: white;
+            border-radius: 12px;
+            margin: 15px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        .btn-number {
+            border: none;
+            border-radius: 8px;
+            padding: 10px 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        /* Color Mapping for Wingo numbers */
+        .num-0 { background: linear-gradient(135deg, #6f42c1, #dc3545); } /* violet + red */
+        .num-5 { background: linear-gradient(135deg, #6f42c1, #28a745); } /* violet + green */
+        .num-odd { background: linear-gradient(135deg, #28a745, #1e7e34); } /* green */
+        .num-even { background: linear-gradient(135deg, #dc3545, #bd2130); } /* red */
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 0 15px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #212529;
+            display: flex;
+            align-items: center;
+        }
+        .history-card {
+            background-color: white;
+            border-radius: 12px;
+            margin: 15px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+        .history-table th { font-size: 0.85rem; color: #6c757d; }
+        .history-table td { font-size: 0.9rem; padding: 10px 0; vertical-align: middle; }
+        .circle-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        .circle-red { background-color: #dc3545; }
+        .circle-green { background-color: #28a745; }
+        .circle-violet { background-color: #6f42c1; }
+        .circle-redviolet { background: linear-gradient(135deg, #6f42c1, #dc3545); }
+        .circle-greenviolet { background: linear-gradient(135deg, #6f42c1, #28a745); }
+        
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #ffffff;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .nav-item-btn {
+            color: #8c96a3;
+            text-decoration: none;
+            font-size: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+        }
+        .nav-item-btn.active { color: #fb4e4e; }
+        .nav-item-btn i { font-size: 1.3rem; margin-bottom: 2px; }
+
+        /* Modal styling */
+        .modal-content { border-radius: 15px; border: none; }
+        .modal-header { border-bottom: none; }
+        .modal-footer { border-top: none; }
+        .chip-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .chip-btn {
+            border: 1px solid #ced4da;
+            background-color: transparent;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+        .chip-btn.active {
+            background-color: #fb4e4e;
+            color: white;
+            border-color: #fb4e4e;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- User Account Header Banner -->
+    <div class="profile-section d-flex justify-content-between align-items-center">
+        <div>
+            <div class="balance-title">Wallet Balance</div>
+            <div class="balance-value">₹<span id="userBalance">0.00</span></div>
+            <div class="user-id"><i class="fa-solid fa-user-tag me-1"></i>ID: <span id="userCode">WINGO</span></div>
+        </div>
+        <button class="recharge-btn" onclick="window.location.href='recharge.html'"><i class="fa-solid fa-plus-circle me-1"></i>Recharge</button>
+    </div>
+
+    <!-- Active Game Period Countdown Card -->
+    <div class="game-status-card">
+        <div>
+            <div class="period-label"><i class="fa-solid fa-clock-rotate-left me-1"></i>Active Period</div>
+            <div class="period-value" id="gamePeriod">20260823001</div>
+        </div>
+        <div>
+            <div class="timer-label">Time Remaining</div>
+            <div class="timer-value" id="gameTimer">03:00</div>
+        </div>
+    </div>
+
+    <!-- Color Bet Buttons -->
+    <div class="color-buttons">
+        <button class="btn-color btn-green" onclick="openBetModal('green')">Green</button>
+        <button class="btn-color btn-violet" onclick="openBetModal('violet')">Violet</button>
+        <button class="btn-color btn-red" onclick="openBetModal('red')">Red</button>
+    </div>
+
+    <!-- Number Bet Buttons -->
+    <div class="number-grid">
+        <button class="btn-number num-0" onclick="openBetModal('0')">0</button>
+        <button class="btn-number num-odd" onclick="openBetModal('1')">1</button>
+        <button class="btn-number num-even" onclick="openBetModal('2')">2</button>
+        <button class="btn-number num-odd" onclick="openBetModal('3')">3</button>
+        <button class="btn-number num-even" onclick="openBetModal('4')">4</button>
+        <button class="btn-number num-5" onclick="openBetModal('5')">5</button>
+        <button class="btn-number num-even" onclick="openBetModal('6')">6</button>
+        <button class="btn-number num-odd" onclick="openBetModal('7')">7</button>
+        <button class="btn-number num-even" onclick="openBetModal('8')">8</button>
+        <button class="btn-number num-odd" onclick="openBetModal('9')">9</button>
+    </div>
+
+    <!-- Game Records History Logs -->
+    <div class="section-title"><i class="fa-solid fa-chart-line me-2"></i>Wingo Game Records</div>
+    <div class="history-card">
+        <table class="table history-table text-center mb-0">
+            <thead>
+                <tr>
+                    <th>Period ID</th>
+                    <th>Number</th>
+                    <th>Color</th>
+                </tr>
+            </thead>
+            <tbody id="gameHistoryList">
+                <!-- Mock Results Generated Dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <button class="nav-item-btn active"><i class="fa-solid fa-gamepad"></i>Game</button>
+        <button class="nav-item-btn" onclick="window.location.href='recharge.html'"><i class="fa-solid fa-wallet"></i>Wallet</button>
+        <button class="nav-item-btn" onclick="window.location.href='admin.html'"><i class="fa-solid fa-user-gear"></i>Admin</button>
+        <button class="nav-item-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i>Logout</button>
+    </div>
+</div>
+
+<!-- Bet Amount Choice Modal -->
+<div class="modal fade" id="betModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Join Wingo - Predict <span class="badge text-uppercase" id="selectedBetName">Red</span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label class="form-label text-muted">Select Contract Amount (₹)</label>
+                <div class="chip-group">
+                    <button class="chip-btn active" onclick="setChipAmount(10)">₹10</button>
+                    <button class="chip-btn" onclick="setChipAmount(100)">₹100</button>
+                    <button class="chip-btn" onclick="setChipAmount(1000)">₹1000</button>
+                    <button class="chip-btn" onclick="setChipAmount(5000)">₹5000</button>
+                </div>
+                <div class="mt-3">
+                    <label class="form-label text-muted">Enter Custom Amount (₹)</label>
+                    <input type="number" class="form-control" id="customBetAmount" value="10" min="10">
+                </div>
+                <div id="betAlert" class="alert alert-danger d-none py-2 text-center mt-3" role="alert"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmBetBtn" style="background: linear-gradient(135deg, #fb4e4e, #d82c2c);">Confirm Bet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- MD5 Hash Dependency (used for deterministic client-side game outcome hashes) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+<!-- Firebase API Helper -->
+<script src="firebase-config.js"></script>
+<script>
+    const username = localStorage.getItem('wingo_user');
+    if (!username) {
+        window.location.href = 'index.html';
+    }
+
+    let userBalance = 0;
+    let selectedBet = '';
+    let betAmount = 10;
+    let currentPeriod = '';
+    let placedBets = {}; // Store player bets placed in current period
+
+    // Initial Fetch on Boot
+    async function loadUserProfile() {
+        const profile = await firebaseRequest(`users/${username}`);
+        if (profile) {
+            userBalance = profile.balance ?? 0;
+            document.getElementById('userBalance').innerText = parseFloat(userBalance).toFixed(2);
+            document.getElementById('userCode').innerText = profile.usercode ?? 'WINGO';
+        }
+    }
+
+    // Hash-based Result Generator (Stateless outcome engine)
+    function getPeriodResult(period) {
+        const hash = md5(period + "WingoGameSecretKey");
+        const num = parseInt(hash.substring(0, 2), 16) % 10;
+        
+        let color = '';
+        let badgeClass = '';
+        
+        if (num === 0) {
+            color = 'redviolet';
+            badgeClass = 'circle-redviolet';
+        } else if (num === 5) {
+            color = 'greenviolet';
+            badgeClass = 'circle-greenviolet';
+        } else if (num % 2 === 0) {
+            color = 'red';
+            badgeClass = 'circle-red';
+        } else {
+            color = 'green';
+            badgeClass = 'circle-green';
+        }
+        
+        return {
+            period: period,
+            number: num,
+            color: color,
+            badgeClass: badgeClass
+        };
+    }
+
+    // Populate Historical Results logs
+    function renderGameHistory(minutesMidnight) {
+        const listEl = document.getElementById('gameHistoryList');
+        listEl.innerHTML = '';
+        
+        // Generate results for previous 15 periods
+        for (let i = 1; i <= 15; i++) {
+            const p_num = Math.floor(minutesMidnight / 3) - i + 1;
+            const ymd = new Date().toISOString().slice(0,10).replace(/-/g,"");
+            const period = ymd + String(p_num).padStart(3, '0');
+            
+            const res = getPeriodResult(period);
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${res.period}</td>
+                <td><span class="circle-badge ${res.badgeClass}">${res.number}</span></td>
+                <td class="text-capitalize font-weight-bold" style="color: ${res.color === 'red' ? '#dc3545' : (res.color === 'green' ? '#28a745' : '#6f42c1')}">${res.color}</td>
+            `;
+            listEl.appendChild(tr);
+        }
+    }
+
+    // Sync Game Countdown Loop
+    function runTimerSync() {
+        setInterval(() => {
+            const now = new Date();
+            const minutesMidnight = now.getHours() * 60 + now.getMinutes();
+            const seconds = now.getSeconds();
+            
+            // 3-minute game interval: calculate cycle details
+            const totalCycleSeconds = 180;
+            const currentCycleSeconds = (now.getMinutes() % 3) * 60 + seconds;
+            const remainingSeconds = totalCycleSeconds - currentCycleSeconds;
+            
+            // Calculate Period ID
+            const currentPeriodNum = Math.floor(minutesMidnight / 3) + 1;
+            const ymd = now.toISOString().slice(0,10).replace(/-/g,"");
+            const activePeriod = ymd + String(currentPeriodNum).padStart(3, '0');
+            
+            if (currentPeriod !== activePeriod) {
+                // If period changed, resolve the bets placed in the just finished period!
+                if (currentPeriod !== '') {
+                    resolveBetsPlaced(currentPeriod);
+                }
+                currentPeriod = activePeriod;
+                document.getElementById('gamePeriod').innerText = currentPeriod;
+                renderGameHistory(minutesMidnight);
+                loadUserProfile(); // refresh user wallet balance
+            }
+            
+            // Format timer remaining display
+            const minLeft = Math.floor(remainingSeconds / 60);
+            const secLeft = remainingSeconds % 60;
+            document.getElementById('gameTimer').innerText = 
+                `${String(minLeft).padStart(2, '0')}:${String(secLeft).padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    // Resolve Player Bets dynamically at period end
+    async function resolveBetsPlaced(period) {
+        const bet = placedBets[period];
+        if (!bet) return;
+        
+        const outcome = getPeriodResult(period);
+        let multiplier = 0;
+        
+        if (bet.type === 'red' || bet.type === 'green') {
+            if (outcome.color === bet.type || outcome.color.includes(bet.type)) {
+                multiplier = outcome.color.includes('violet') ? 1.5 : 2; // if violet lands, 1.5x payout, otherwise 2x
+            }
+        } else if (bet.type === 'violet') {
+            if (outcome.color.includes('violet')) {
+                multiplier = 4.5;
+            }
+        } else {
+            // number bet
+            if (parseInt(bet.type) === outcome.number) {
+                multiplier = 9; // 9x payout for predicting exact winning number
+            }
+        }
+        
+        if (multiplier > 0) {
+            const winnings = bet.amount * multiplier;
+            userBalance += winnings;
+            
+            // Update balance in Firebase
+            await firebaseRequest(`users/${username}/balance`, 'PUT', userBalance);
+            alert(`Congratulations! You won ₹${winnings.toFixed(2)} on Period ${period}!`);
+        } else {
+            alert(`Oops! You lost ₹${bet.amount.toFixed(2)} on Period ${period}. Better luck next time!`);
+        }
+        
+        // Clear bet
+        delete placedBets[period];
+        loadUserProfile();
+    }
+
+    // Manage Bet Modals
+    const betModal = new bootstrap.Modal(document.getElementById('betModal'));
+    
+    function openBetModal(selection) {
+        selectedBet = selection;
+        const nameEl = document.getElementById('selectedBetName');
+        nameEl.innerText = selection;
+        nameEl.className = 'badge text-uppercase ';
+        
+        if (selection === 'red') nameEl.classList.add('bg-danger');
+        else if (selection === 'green') nameEl.classList.add('bg-success');
+        else if (selection === 'violet') nameEl.classList.add('bg-purple');
+        else nameEl.classList.add('bg-secondary');
+        
+        document.getElementById('betAlert').classList.add('d-none');
+        betModal.show();
+    }
+
+    function setChipAmount(amt) {
+        betAmount = amt;
+        document.getElementById('customBetAmount').value = amt;
+        
+        // Toggle active styling
+        const buttons = document.querySelectorAll('.chip-btn');
+        buttons.forEach(btn => {
+            if (btn.innerText.includes(amt)) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    // Listen to custom bet change
+    document.getElementById('customBetAmount').addEventListener('input', (e) => {
+        betAmount = parseInt(e.target.value) || 0;
+    });
+
+    // Handle Confirm Bet Submission
+    document.getElementById('confirmBetBtn').addEventListener('click', async () => {
+        const amount = parseInt(document.getElementById('customBetAmount').value);
+        const alertEl = document.getElementById('betAlert');
+        alertEl.classList.add('d-none');
+        
+        if (amount < 10) {
+            alertEl.innerText = "Minimum bet amount is ₹10.";
+            alertEl.classList.remove('d-none');
+            return;
+        }
+        
+        if (amount > userBalance) {
+            alertEl.innerText = "Insufficient balance! Please recharge.";
+            alertEl.classList.remove('d-none');
+            return;
+        }
+        
+        // Deduct balance locally and in Firebase
+        userBalance -= amount;
+        const res = await firebaseRequest(`users/${username}/balance`, 'PUT', userBalance);
+        
+        if (res !== null) {
+            // Save bet record under current period local memory (stateless checks)
+            placedBets[currentPeriod] = {
+                type: selectedBet,
+                amount: amount
+            };
+            
+            // Record bet reference in Firebase for admin history auditing
+            firebaseRequest(`bets/${currentPeriod}/${username}`, 'PUT', {
+                bet_type: selectedBet,
+                amount: amount,
+                time: new Date().toISOString()
+            });
+            
+            document.getElementById('userBalance').innerText = parseFloat(userBalance).toFixed(2);
+            betModal.hide();
+            alert("Bet Placed Successfully!");
+        } else {
+            alertEl.innerText = "Transaction failed. Please try again.";
+            alertEl.classList.remove('d-none');
+        }
+    });
+
+    // Handle logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('wingo_user');
+        window.location.href = 'index.html';
+    });
+
+    // Run on startup
+    loadUserProfile();
+    runTimerSync();
+</script>
+</body>
+</html>

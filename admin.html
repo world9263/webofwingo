@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wingo - Admin Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f1f3f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 20px;
+            padding-bottom: 80px;
+        }
+        .container {
+            max-width: 600px;
+        }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: none;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #343a40, #212529);
+            color: white;
+            border-top-left-radius: 12px !important;
+            border-top-right-radius: 12px !important;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn-approve {
+            background-color: #28a745;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 5px;
+        }
+        .btn-approve:hover { background-color: #218838; }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 600px;
+            height: 60px;
+            background-color: #ffffff;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            z-index: 1000;
+        }
+        .nav-item-btn {
+            color: #8c96a3;
+            text-decoration: none;
+            font-size: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+        }
+        .nav-item-btn.active { color: #fb4e4e; }
+        .nav-item-btn i { font-size: 1.3rem; margin-bottom: 2px; }
+        
+        .user-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f3f6;
+        }
+        .user-row:last-child { border-bottom: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3 class="mb-4 text-center text-dark"><i class="fa-solid fa-user-shield me-2"></i>Wingo Admin Panel</h3>
+    
+    <!-- Settings section (UPI ID) -->
+    <div class="card">
+        <div class="card-header">
+            <span><i class="fa-solid fa-gears me-2"></i>UPI / System Settings</span>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label font-weight-bold">Recharge UPI ID</label>
+                <input type="text" class="form-control" id="upiIdInput" placeholder="Enter target UPI ID">
+            </div>
+            <button class="btn btn-dark w-100" id="saveSettingsBtn">Save Settings</button>
+        </div>
+    </div>
+    
+    <!-- Pending recharge requests -->
+    <div class="card">
+        <div class="card-header">
+            <span><i class="fa-solid fa-receipt me-2"></i>Pending Recharge Requests</span>
+            <span class="badge bg-danger" id="rechargeCount">0</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 text-center">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Amount</th>
+                            <th>UTR</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingRechargesList">
+                        <tr>
+                            <td colspan="4" class="text-muted py-3">No pending recharge requests.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Users list and wallet balances -->
+    <div class="card">
+        <div class="card-header">
+            <span><i class="fa-solid fa-users me-2"></i>User Management</span>
+        </div>
+        <div class="card-body" id="usersList">
+            <div class="text-center text-muted py-3">Loading users...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Navigation Bar -->
+<div class="bottom-nav">
+    <button class="nav-item-btn" onclick="window.location.href='game.html'"><i class="fa-solid fa-gamepad"></i>Game</button>
+    <button class="nav-item-btn" onclick="window.location.href='recharge.html'"><i class="fa-solid fa-wallet"></i>Wallet</button>
+    <button class="nav-item-btn active"><i class="fa-solid fa-user-gear"></i>Admin</button>
+    <button class="nav-item-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i>Logout</button>
+</div>
+
+<!-- Firebase API Helper -->
+<script src="firebase-config.js"></script>
+<script>
+    const adminUser = localStorage.getItem('wingo_user');
+    if (!adminUser) {
+        window.location.href = 'index.html';
+    }
+
+    // Load Settings (UPI ID)
+    async function loadSettings() {
+        const settings = await firebaseRequest('settings');
+        if (settings && settings.upi_id) {
+            document.getElementById('upiIdInput').value = settings.upi_id;
+        }
+    }
+
+    // Save Settings (UPI ID)
+    document.getElementById('saveSettingsBtn').addEventListener('click', async () => {
+        const upi = document.getElementById('upiIdInput').value.trim();
+        if (!upi) return;
+        
+        const res = await firebaseRequest('settings', 'PUT', { upi_id: upi });
+        if (res) {
+            alert("Settings updated successfully!");
+        } else {
+            alert("Failed to update settings.");
+        }
+    });
+
+    // Load and Render Pending Recharges
+    async function loadPendingRecharges() {
+        const recharges = await firebaseRequest('recharges');
+        const tbody = document.getElementById('pendingRechargesList');
+        tbody.innerHTML = '';
+        
+        let pendingCount = 0;
+        
+        if (recharges) {
+            Object.keys(recharges).forEach(utr => {
+                const req = recharges[utr];
+                if (req.status === 'pending') {
+                    pendingCount++;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${req.username}</strong></td>
+                        <td class="text-success fw-bold">₹${req.amount}</td>
+                        <td class="font-monospace">${req.utr}</td>
+                        <td>
+                            <button class="btn-approve" onclick="approveRecharge('${req.utr}', '${req.username}', ${req.amount})">Approve</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+        }
+        
+        document.getElementById('rechargeCount').innerText = pendingCount;
+        
+        if (pendingCount === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="text-muted py-3">No pending recharge requests.</td></tr>`;
+        }
+    }
+
+    // Approve Recharge Request (Updates user balance and request status)
+    async function approveRecharge(utr, user, amount) {
+        if (!confirm(`Are you sure you want to approve ₹${amount} for ${user}?`)) return;
+        
+        // 1. Fetch current user balance
+        const userData = await firebaseRequest(`users/${user}`);
+        if (!userData) {
+            alert("Error: User profile not found!");
+            return;
+        }
+        
+        const currentBalance = userData.balance ?? 0;
+        const newBalance = currentBalance + amount;
+        
+        // 2. Update balance in Firebase
+        const updateBalanceRes = await firebaseRequest(`users/${user}/balance`, 'PUT', newBalance);
+        
+        if (updateBalanceRes !== null) {
+            // 3. Mark recharge as successful
+            await firebaseRequest(`recharges/${utr}/status`, 'PUT', 'approved');
+            
+            alert(`Recharge approved successfully! ₹${amount} added to ${user}'s wallet.`);
+            loadPendingRecharges();
+            loadUsers();
+        } else {
+            alert("Failed to update user balance. Try again.");
+        }
+    }
+
+    // Load and Render Registered Users
+    async function loadUsers() {
+        const users = await firebaseRequest('users');
+        const container = document.getElementById('usersList');
+        container.innerHTML = '';
+        
+        if (users) {
+            Object.keys(users).forEach(uname => {
+                const u = users[uname];
+                const div = document.createElement('div');
+                div.className = 'user-row';
+                div.innerHTML = `
+                    <div>
+                        <strong>${u.username}</strong>
+                        <div class="small text-muted">Code: ${u.usercode ?? 'N/A'}</div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-success font-monospace fs-6">₹${parseFloat(u.balance ?? 0).toFixed(2)}</span>
+                        <button class="btn btn-sm btn-outline-dark" onclick="editUserBalance('${u.username}', ${u.balance ?? 0})"><i class="fa-solid fa-edit"></i></button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        } else {
+            container.innerHTML = `<div class="text-center text-muted py-3">No users registered yet.</div>`;
+        }
+    }
+
+    // Manually edit a user's wallet balance
+    async function editUserBalance(user, currentBal) {
+        const newBal = prompt(`Enter new balance for ${user} (Current: ₹${currentBal}):`, currentBal);
+        if (newBal === null || newBal === '') return;
+        
+        const balValue = parseFloat(newBal);
+        if (isNaN(balValue)) {
+            alert("Please enter a valid number.");
+            return;
+        }
+        
+        const res = await firebaseRequest(`users/${user}/balance`, 'PUT', balValue);
+        if (res !== null) {
+            alert(`Wallet balance for ${user} updated to ₹${balValue.toFixed(2)}!`);
+            loadUsers();
+        } else {
+            alert("Failed to update wallet balance.");
+        }
+    }
+
+    // Handle logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('wingo_user');
+        window.location.href = 'index.html';
+    });
+
+    // Run on startup
+    loadSettings();
+    loadPendingRecharges();
+    loadUsers();
+</script>
+</body>
+</html>
