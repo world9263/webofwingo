@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Disable competing Apache MPM modules to prevent crash
+echo "Configuring Apache MPM modules..."
+a2dismod mpm_event || true
+a2dismod mpm_worker || true
+a2enmod mpm_prefork || true
+
 # Ensure runtime directories exist with correct permissions
 mkdir -p /var/run/mysqld
 chown -R mysql:mysql /var/run/mysqld
@@ -25,20 +31,24 @@ for i in {1..30}; do
     sleep 1
 done
 
-# Create database, set user permissions, and import sql
-echo "Initializing Database..."
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS aviatorp_demo1;"
-mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'aviatorp_demo1';"
-mysql -u root -e "GRANT ALL PRIVILEGES ON aviatorp_demo1.* TO 'root'@'localhost';"
-mysql -u root -e "FLUSH PRIVILEGES;"
+# Initialize database only if it doesn't already exist
+if ! mysql -u root -e "use aviatorp_demo1" >/dev/null 2>&1; then
+    echo "Initializing Database..."
+    mysql -u root -e "CREATE DATABASE IF NOT EXISTS aviatorp_demo1;"
+    mysql -u root -e "CREATE USER 'aviatorp_demo1'@'localhost' IDENTIFIED BY 'aviatorp_demo1';"
+    mysql -u root -e "GRANT ALL PRIVILEGES ON aviatorp_demo1.* TO 'aviatorp_demo1'@'localhost';"
+    mysql -u root -e "FLUSH PRIVILEGES;"
 
-# Import the schema
-if [ -f /tmp/indianwatchdogs.sql ]; then
-    echo "Importing database dump..."
-    mysql -u root -p'aviatorp_demo1' aviatorp_demo1 < /tmp/indianwatchdogs.sql
-    echo "Database import complete!"
+    # Import the schema
+    if [ -f /tmp/indianwatchdogs.sql ]; then
+        echo "Importing database dump..."
+        mysql -u root aviatorp_demo1 < /tmp/indianwatchdogs.sql
+        echo "Database import complete!"
+    else
+        echo "Database dump not found at /tmp/indianwatchdogs.sql"
+    fi
 else
-    echo "Database dump not found at /tmp/indianwatchdogs.sql"
+    echo "Database 'aviatorp_demo1' already initialized, skipping setup."
 fi
 
 # Run Apache in foreground
