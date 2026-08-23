@@ -1,19 +1,21 @@
-FROM php:8.1-apache
+﻿FROM php:8.1-apache
 
 # Install MariaDB (MySQL compatible) server and client
-RUN apt-get update && apt-get install -y \
-    mariadb-server \
-    mariadb-client \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y mariadb-server mariadb-client && rm -rf /var/lib/apt/lists/*
 
 # Install MySQL extensions for PHP
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Enable Apache mod_rewrite and disable competing MPM modules
-RUN a2dismod mpm_event || true \
-    && a2dismod mpm_worker || true \
-    && a2enmod mpm_prefork || true \
-    && a2enmod rewrite
+# Disable competing MPM modules by removing symlinks
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.load
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.conf
+RUN rm -f /etc/apache2/mods-enabled/mpm_worker.load
+RUN rm -f /etc/apache2/mods-enabled/mpm_worker.conf
+
+# Enable prefork MPM and mod_rewrite
+RUN ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load
+RUN ln -sf /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf
+RUN a2enmod rewrite
 
 # Copy public_html files into apache default web directory
 COPY public_html/ /var/www/html/
